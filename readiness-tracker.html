@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام متابعة مصادر البيانات والوثائق - التقويم الخارجي 2026</title>
+<style>
+  :root{
+    --primary:#1f6f5c; --primary-dark:#154d40; --accent:#e08a1e;
+    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76;
+    --border:#dfe7e4; --ok:#2e8b57; --mid:#e08a1e; --no:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Tahoma','Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
+  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px 16px;text-align:center;}
+  header h1{margin:0;font-size:19px;}
+  header p{margin:6px 0 0;font-size:13px;opacity:.9;}
+  .wrap{max-width:960px;margin:0 auto;padding:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  #loginBox{max-width:420px;margin:40px auto;}
+  #loginBox input{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:20px;letter-spacing:4px;text-align:center;margin-top:8px;}
+  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-size:15px;cursor:pointer;margin-top:14px;width:100%;}
+  #loginBox button:hover, .btn:hover{background:var(--primary-dark);}
+  #loginMsg{color:var(--no);font-size:13px;margin-top:8px;}
+  .hidden{display:none;}
+  .role-title{font-size:17px;font-weight:bold;color:var(--primary-dark);}
+  .role-sub{font-size:12px;color:var(--muted);}
+  .item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+  .item-title{font-weight:bold;margin-bottom:4px;}
+  .item-domain{display:inline-block;font-size:11px;background:#e8f2ef;color:var(--primary-dark);border-radius:12px;padding:2px 9px;margin-bottom:6px;}
+  .item-user{display:inline-block;font-size:11px;background:#f0e9f8;color:#5b3a91;border-radius:12px;padding:2px 9px;margin-bottom:6px;margin-inline-start:4px;}
+  .item-hint{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:6px 8px;margin-bottom:8px;}
+  .item-hint b{color:var(--accent);}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .row label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px;}
+  .field{flex:1;min-width:130px;}
+  select,input[type=text],input[type=number],textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;}
+  .status-لم_يبدأ{border-right:5px solid var(--no);}
+  .status-قيد_التنفيذ{border-right:5px solid var(--mid);}
+  .status-مكتمل{border-right:5px solid var(--ok);}
+  .save-note{font-size:11px;color:var(--muted);margin-top:4px;min-height:14px;}
+  .progress-bar{height:8px;background:#e5eae8;border-radius:4px;overflow:hidden;margin-top:6px;}
+  .progress-fill{height:100%;background:var(--ok);}
+  .dash-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:6px;flex-wrap:wrap;}
+  .dash-role{font-weight:bold;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .logout{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
+  .summary-total{font-size:13px;color:var(--muted);margin-bottom:10px;}
+  .toggle-group{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .toggle-btn{flex:1;min-width:100px;padding:8px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;width:auto;margin:0;}
+  .toggle-btn.active{background:var(--primary);color:#fff;}
+  .updated-flag{display:flex;align-items:center;gap:6px;font-size:13px;background:#f0f7f4;border-radius:6px;padding:8px;margin-bottom:8px;}
+  .updated-flag input{width:auto;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>نظام متابعة مصادر البيانات والوثائق</h1>
+  <p>الاستعداد للتقويم الخارجي 2026</p>
+</header>
+
+<div class="wrap">
+
+  <div id="loginBox" class="card">
+    <div class="role-title">تسجيل الدخول</div>
+    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري الخاص (PIN)</label>
+    <input type="text" inputmode="numeric" id="codeInput" placeholder="••••" maxlength="8">
+    <button onclick="doLogin()">دخول</button>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="appBox" class="hidden">
+    <div class="topbar">
+      <div>
+        <div class="role-title" id="roleTitle"></div>
+        <div class="role-sub" id="roleSub"></div>
+      </div>
+      <button class="logout" onclick="logout()">تسجيل خروج</button>
+    </div>
+
+    <div id="adminDash" class="card hidden">
+      <div class="topbar"><div class="role-title">نظرة عامة</div></div>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btnByRole" onclick="switchGroup('role')">حسب الدور</button>
+        <button class="toggle-btn" id="btnByUser" onclick="switchGroup('user')">حسب الموظف</button>
+        <button class="toggle-btn" id="btnByDomain" onclick="switchGroup('domain')">حسب المجالات السبعة</button>
+      </div>
+      <div id="dashRows"></div>
+    </div>
+
+    <div class="card">
+      <div class="summary-total" id="summaryTotal"></div>
+      <div id="itemsList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ====== غيّر هذا الرابط برابط الـ Web App الخاص بك بعد النشر من Apps Script ======
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+let currentUser = null;
+let currentRole = null;
+let isAdmin = false;
+let currentGroupBy = 'role';
+
+async function apiCall(payload){
+  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+async function doLogin(){
+  const code = document.getElementById('codeInput').value.trim();
+  if(!code){ return; }
+  document.getElementById('loginMsg').textContent = 'جارِ التحقق...';
+  const res = await apiCall({action:'login', code: code});
+  if(res.success){
+    currentUser = res.userName;
+    currentRole = res.role;
+    isAdmin = res.isAdmin;
+    localStorage.setItem('rt_code', code);
+    showApp();
+  } else {
+    document.getElementById('loginMsg').textContent = res.message || 'خطأ في تسجيل الدخول';
+  }
+}
+
+function logout(){
+  localStorage.removeItem('rt_code');
+  location.reload();
+}
+
+async function showApp(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('appBox').classList.remove('hidden');
+  document.getElementById('roleTitle').textContent = isAdmin ? 'عرض شامل لكل الموظفين' : currentUser;
+  document.getElementById('roleSub').textContent = isAdmin ? '' : currentRole;
+  if(isAdmin){
+    document.getElementById('adminDash').classList.remove('hidden');
+    loadDashboard();
+  }
+  loadItems();
+}
+
+function switchGroup(g){
+  currentGroupBy = g;
+  document.getElementById('btnByRole').classList.toggle('active', g==='role');
+  document.getElementById('btnByUser').classList.toggle('active', g==='user');
+  document.getElementById('btnByDomain').classList.toggle('active', g==='domain');
+  loadDashboard();
+}
+
+async function loadDashboard(){
+  const res = await apiCall({action:'getDashboard', groupBy: currentGroupBy});
+  if(!res.success) return;
+  const box = document.getElementById('dashRows');
+  box.innerHTML = '';
+  res.summary.forEach(s=>{
+    const div = document.createElement('div');
+    div.className = 'dash-row';
+    div.innerHTML = `<span class="dash-role">${s.group}</span>
+      <span>${s.done}/${s.total} مكتمل — محدّث: ${s.updated}/${s.total} — متوسط الإنجاز ${s.avgProgress}%</span>`;
+    box.appendChild(div);
+  });
+}
+
+async function loadItems(){
+  const res = await apiCall({action:'getItems', userName: currentUser, isAdmin: isAdmin});
+  if(!res.success) return;
+  const list = document.getElementById('itemsList');
+  list.innerHTML = '';
+  const done = res.items.filter(i=>i.status==='مكتمل').length;
+  const updated = res.items.filter(i=>i.updated).length;
+  document.getElementById('summaryTotal').textContent =
+    `عدد البنود: ${res.items.length} — مكتمل: ${done} — محدّث: ${updated}`;
+
+  res.items.forEach(it=>{
+    const div = document.createElement('div');
+    const statusClass = 'status-' + it.status.replace(/ /g,'_');
+    div.className = 'item ' + statusClass;
+    div.innerHTML = `
+      <div class="item-domain">${it.domain}</div>
+      ${isAdmin ? `<div class="item-user">${it.userName} — ${it.role}</div>` : ''}
+      <div class="item-title">${it.item}</div>
+      ${it.hint ? `<div class="item-hint"><b>أبرز ما ينبغي أن يظهر فيه:</b> ${it.hint}</div>` : ''}
+      <div class="updated-flag">
+        <input type="checkbox" class="f-updated" data-id="${it.id}" ${it.updated?'checked':''}>
+        <label style="margin:0;">محدّث لآخر فترة (وليس فقط موجود)</label>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>الحالة</label>
+          <select data-id="${it.id}" class="f-status">
+            <option ${it.status==='لم يبدأ'?'selected':''}>لم يبدأ</option>
+            <option ${it.status==='قيد التنفيذ'?'selected':''}>قيد التنفيذ</option>
+            <option ${it.status==='مكتمل'?'selected':''}>مكتمل</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>نسبة الإنجاز (%)</label>
+          <input type="number" min="0" max="100" class="f-progress" data-id="${it.id}" value="${it.progress||0}">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>ملاحظات</label>
+          <textarea class="f-notes" data-id="${it.id}" rows="2">${it.notes||''}</textarea>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${it.progress||0}%"></div></div>
+      <div class="save-note" id="note-${it.id}"></div>
+    `;
+    list.appendChild(div);
+
+    div.querySelectorAll('select, input, textarea').forEach(el=>{
+      el.addEventListener('change', ()=>saveItem(it.id, div));
+    });
+  });
+}
+
+let saveTimers = {};
+function saveItem(id, div){
+  clearTimeout(saveTimers[id]);
+  saveTimers[id] = setTimeout(async ()=>{
+    const status = div.querySelector('.f-status').value;
+    const updated = div.querySelector('.f-updated').checked;
+    const progress = div.querySelector('.f-progress').value;
+    const notes = div.querySelector('.f-notes').value;
+    document.getElementById('note-'+id).textContent = 'جارِ الحفظ...';
+    const res = await apiCall({action:'updateItem', id, status, updated, progress, notes});
+    document.getElementById('note-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
+    div.querySelector('.progress-fill').style.width = (progress||0)+'%';
+    div.className = div.className.replace(/status-\S+/,'') + ' status-' + status.replace(/ /g,'_');
+    if(isAdmin) loadDashboard();
+  }, 500);
+}
+
+window.addEventListener('load', async ()=>{
+  const saved = localStorage.getItem('rt_code');
+  if(saved){
+    document.getElementById('codeInput').value = saved;
+    const res = await apiCall({action:'login', code: saved});
+    if(res.success){
+      currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
+      showApp();
+    }
+  }
+});
+</script>
+
+</body>
+</html>
