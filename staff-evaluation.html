@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقييم الأداء الوظيفي - مرتبط بمؤشرات التقويم الخارجي</title>
+<style>
+  :root{
+    --primary:#1f6f5c; --primary-dark:#154d40; --accent:#e08a1e;
+    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76;
+    --border:#dfe7e4; --ok:#2e8b57; --mid:#e08a1e; --no:#c0392b; --info:#5b3a91;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:'Tahoma','Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
+  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px 16px;text-align:center;}
+  header h1{margin:0;font-size:19px;}
+  header p{margin:6px 0 0;font-size:13px;opacity:.9;}
+  .wrap{max-width:1000px;margin:0 auto;padding:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  #loginBox{max-width:420px;margin:40px auto;}
+  #loginBox input{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:20px;letter-spacing:4px;text-align:center;margin-top:8px;}
+  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-size:15px;cursor:pointer;margin-top:14px;width:100%;}
+  #loginBox button:hover, .btn:hover{background:var(--primary-dark);}
+  #loginMsg{color:var(--no);font-size:13px;margin-top:8px;}
+  .hidden{display:none;}
+  .role-title{font-size:17px;font-weight:bold;color:var(--primary-dark);}
+  .role-sub{font-size:12px;color:var(--muted);}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .logout{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
+  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .tab-btn{padding:8px 14px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;}
+  .tab-btn.active{background:var(--primary);color:#fff;}
+  select{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;}
+  .item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+  .item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;}
+  .item-title{font-weight:bold;}
+  .weight-badge{background:#e8f2ef;color:var(--primary-dark);border-radius:12px;padding:2px 10px;font-size:12px;white-space:nowrap;}
+  .indicator-box{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:6px 8px;margin:8px 0;}
+  .indicator-box b{color:var(--accent);}
+  .committee-tag{display:inline-block;font-size:11px;background:#f0e9f8;color:var(--info);border-radius:12px;padding:2px 9px;margin-top:4px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+  .field{flex:1;min-width:140px;}
+  .field label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px;}
+  input[type=text], textarea, input[type=number]{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;}
+  .score-display{font-size:22px;font-weight:bold;color:var(--primary-dark);}
+  .save-note{font-size:11px;color:var(--muted);margin-top:4px;min-height:14px;}
+  .total-box{display:flex;justify-content:space-between;align-items:center;background:#eef6f3;border-radius:10px;padding:14px;margin-bottom:16px;}
+  .summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .bar-wrap{background:#e5eae8;border-radius:5px;height:10px;overflow:hidden;flex:1;margin:0 10px;}
+  .bar-fill{height:100%;background:var(--primary);}
+  .gallery-item{border-right:4px solid var(--info);padding:8px 12px;margin-bottom:8px;background:#faf9fc;border-radius:6px;font-size:13px;}
+  .gallery-item a{color:var(--info);}
+  .readonly-note{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:8px;margin-top:6px;}
+  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
+  .qr-box{width:100px;height:100px;background:#fff;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .qr-box img,.qr-box canvas{width:100%;height:100%;}
+  .qr-actions{display:flex;flex-direction:column;gap:6px;}
+  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;}
+  .qr-hint{font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>تقييم الأداء الوظيفي</h1>
+  <p>مرتبط بمؤشرات التقويم الخارجي ولجان الدليل التنظيمي</p>
+  <p style="margin-top:10px;"><a href="index.html" style="color:#fff;text-decoration:underline;font-size:13px;">🏠 الرئيسية</a></p>
+</header>
+
+<div class="wrap">
+
+  <!-- عرض عام بدون تسجيل دخول -->
+  <div id="publicBox" class="hidden">
+    <div class="card">
+      <div class="role-title">نظرة عامة على الأداء الوظيفي بالمدرسة</div>
+      <div class="role-sub">عرض إجمالي فقط — لا يظهر اسم أي موظف أو تقييمه الفردي</div>
+    </div>
+    <div class="card">
+      <div class="total-box">
+        <span>نسبة اكتمال التقييمات</span>
+        <span class="score-display" id="pubCompletion">—</span>
+      </div>
+      <div class="role-title" style="margin-bottom:8px;">متوسط الأداء حسب الفئة الوظيفية</div>
+      <div id="pubByModel"></div>
+      <div class="role-title" style="margin:16px 0 8px;">متوسط الأداء حسب اللجنة المسؤولة</div>
+      <div id="pubByCommittee"></div>
+    </div>
+  </div>
+
+  <div id="loginBox" class="card">
+    <div class="role-title">تسجيل الدخول</div>
+    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري الخاص (PIN)</label>
+    <input type="text" inputmode="numeric" id="codeInput" placeholder="••••" maxlength="8">
+    <button onclick="doLogin()">دخول</button>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="appBox" class="hidden">
+    <div class="topbar">
+      <div>
+        <div class="role-title" id="roleTitle"></div>
+        <div class="role-sub" id="roleSub"></div>
+      </div>
+      <button class="logout" onclick="logout()">تسجيل خروج</button>
+    </div>
+
+    <div class="tabs" id="tabsBar"></div>
+
+    <div id="myEvalTab">
+      <div class="total-box">
+        <span>التقدير الإجمالي المرجّح</span>
+        <span class="score-display" id="myTotal">—</span>
+      </div>
+      <div id="myItemsList"></div>
+    </div>
+
+    <div id="adminEvalTab" class="hidden">
+      <div class="card">
+        <label style="font-size:13px;color:var(--muted)">اختر الموظف</label>
+        <select id="staffSelect" onchange="loadStaffEval()"></select>
+      </div>
+      <div class="total-box">
+        <span>التقدير الإجمالي المرجّح لهذا الموظف</span>
+        <span class="score-display" id="staffTotal">—</span>
+      </div>
+      <div id="staffItemsList"></div>
+    </div>
+
+    <div id="galleryTab" class="hidden">
+      <div class="card">
+        <div class="role-title">معرض الشواهد حسب المعيار والمؤشر</div>
+        <div class="role-sub">اختر المعيار ثم المؤشر لعرض كل الشواهد المرتبطة به، أو اتركهما لعرض الكل</div>
+        <div class="row" style="margin-top:10px;">
+          <div class="field">
+            <label>المعيار</label>
+            <select id="filterStandard" onchange="onStandardChange()">
+              <option value="">-- كل المعايير --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>المؤشر</label>
+            <select id="filterIndicator" onchange="renderFilteredGallery()">
+              <option value="">-- كل المؤشرات --</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للمعيار/المؤشر المحدد</button>
+      </div>
+      <div id="galleryList"></div>
+    </div>
+
+  </div>
+
+  <!-- منطقة مخفية تُستخدم للطباعة/التصدير فقط -->
+  <div id="printArea" class="hidden"></div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+let currentUser = null, currentRole = null, isAdmin = false;
+let allEvalItems = []; // لملء قائمة الموظفين لدى الإدمن
+
+async function apiCall(payload){
+  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+// ==== عرض عام بدون دخول عبر ?public=1 في الرابط ====
+if (new URLSearchParams(location.search).get('public') === '1') {
+  document.getElementById('publicBox').classList.remove('hidden');
+  loadPublicSummary();
+}
+async function loadPublicSummary(){
+  const res = await apiCall({action:'getEvalPublicSummary'});
+  if(!res.success) return;
+  document.getElementById('pubCompletion').textContent = res.overallCompletion + '%';
+  renderBars('pubByModel', res.byModel);
+  renderBars('pubByCommittee', res.byCommittee);
+}
+function renderBars(elId, arr){
+  const box = document.getElementById(elId);
+  box.innerHTML = '';
+  arr.forEach(x=>{
+    const pct = x.avgScore ? Math.round((x.avgScore/5)*100) : 0;
+    const div = document.createElement('div');
+    div.className = 'summary-row';
+    div.innerHTML = `<span>${x.name}</span>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span>${x.avgScore ?? '—'} / 5</span>`;
+    box.appendChild(div);
+  });
+}
+
+// ==== تسجيل الدخول ====
+async function doLogin(){
+  const code = document.getElementById('codeInput').value.trim();
+  if(!code) return;
+  document.getElementById('loginMsg').textContent = 'جارِ التحقق...';
+  const res = await apiCall({action:'login', code});
+  if(res.success){
+    currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
+    localStorage.setItem('eval_code', code);
+    showApp();
+  } else {
+    document.getElementById('loginMsg').textContent = res.message || 'خطأ في تسجيل الدخول';
+  }
+}
+function logout(){ localStorage.removeItem('eval_code'); location.reload(); }
+
+async function showApp(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('appBox').classList.remove('hidden');
+  document.getElementById('roleTitle').textContent = currentUser;
+  document.getElementById('roleSub').textContent = currentRole;
+
+  const tabs = document.getElementById('tabsBar');
+  tabs.innerHTML = '';
+  addTab(tabs, 'تقييمي', 'myEvalTab', true);
+  if(isAdmin){
+    addTab(tabs, 'تقييم الموظفين', 'adminEvalTab', false);
+    addTab(tabs, 'معرض الشواهد', 'galleryTab', false);
+  }
+  loadMyEval();
+}
+function addTab(container, label, targetId, active){
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (active ? ' active' : '');
+  btn.textContent = label;
+  btn.onclick = ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ['myEvalTab','adminEvalTab','galleryTab'].forEach(id=>{
+      document.getElementById(id).classList.toggle('hidden', id!==targetId);
+    });
+    if(targetId==='adminEvalTab') loadAdminStaffList();
+    if(targetId==='galleryTab') loadGallery();
+  };
+  container.appendChild(btn);
+}
+
+// ==== تقييمي (الموظف) ====
+async function loadMyEval(){
+  const res = await apiCall({action:'getEvalItems', userName: currentUser, isAdmin:false});
+  if(!res.success) return;
+  renderMyItems(res.items);
+}
+function computeWeightedTotal(items){
+  let sum=0, weightScored=0, totalWeight=0;
+  items.forEach(it=>{
+    totalWeight += Number(it.weight)||0;
+    if(it.score){ sum += (Number(it.score)/5) * (Number(it.weight)||0); weightScored += Number(it.weight)||0; }
+  });
+  if(weightScored===0) return null;
+  return Math.round((sum/totalWeight)*1000)/10; // نسبة % من إجمالي الوزن
+}
+function renderMyItems(items){
+  const total = computeWeightedTotal(items);
+  document.getElementById('myTotal').textContent = total!==null ? total+'%' : 'لم يُقيَّم بعد';
+  const list = document.getElementById('myItemsList');
+  list.innerHTML = '';
+  items.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="item-top">
+        <div class="item-title">${it.element}</div>
+        <span class="weight-badge">الوزن ${it.weight}%</span>
+      </div>
+      ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+      ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
+      <span class="committee-tag">${it.committee}</span>
+      <div class="row">
+        <div class="field">
+          <label>رابط الشاهد (رابط جاهز)</label>
+          <input type="text" class="f-link" data-id="${it.id}" value="${it.evidenceLink||''}" placeholder="https://...">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>أو ارفع صورة/ملف PDF مباشرة (يُحفظ تلقائيًا ويُنشئ الرابط والرمز)</label>
+          <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+        </div>
+      </div>
+      <div class="qr-block" id="qr-block-${it.id}"></div>
+      <div class="save-note" id="note-${it.id}"></div>
+      <div class="readonly-note">
+        <b>درجة المقيّم:</b> ${it.score ? it.score+' / 5' : 'لم تُدخَل بعد'}
+        ${it.reviewerNotes ? '<br><b>ملاحظات المقيّم:</b> ' + it.reviewerNotes : ''}
+      </div>
+    `;
+    list.appendChild(div);
+    div.querySelector('.f-link').addEventListener('change', ()=>saveMyEvidence(it.id, div));
+    div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
+    renderQrBlock(it.id, it.evidenceLink);
+  });
+}
+
+function renderQrBlock(id, link){
+  const box = document.getElementById('qr-block-'+id);
+  if(!box) return;
+  box.innerHTML = '';
+  if(!link) return;
+  const a = document.createElement('a');
+  a.href = link; a.target = '_blank'; a.rel = 'noopener';
+  const qrDiv = document.createElement('div');
+  qrDiv.className = 'qr-box';
+  qrDiv.id = 'qr-img-'+id;
+  a.appendChild(qrDiv);
+
+  const actions = document.createElement('div');
+  actions.className = 'qr-actions';
+  actions.innerHTML = `
+    <span class="qr-hint">اضغط الرمز لفتح الشاهد</span>
+    <button type="button" onclick="downloadQr('${id}')">تنزيل الرمز كصورة</button>
+  `;
+  box.appendChild(a);
+  box.appendChild(actions);
+  new QRCode(qrDiv, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
+}
+
+function downloadQr(id){
+  const container = document.getElementById('qr-img-'+id);
+  if(!container) return;
+  const canvas = container.querySelector('canvas');
+  const img = container.querySelector('img');
+  const dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+  if(!dataUrl) return;
+  const link = document.createElement('a');
+  link.href = dataUrl; link.download = 'qr-' + id + '.png';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+async function uploadEvidenceFile(id, div, file){
+  if(!file) return;
+  const noteEl = document.getElementById('note-'+id);
+  const maxMB = 8;
+  if(file.size > maxMB*1024*1024){
+    noteEl.textContent = `الملف كبير (أكبر من ${maxMB}MB) — اختر ملفًا أصغر`;
+    return;
+  }
+  noteEl.textContent = 'جارِ رفع الملف...';
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64Data = reader.result.split(',')[1];
+    const res = await apiCall({ action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data });
+    if(res.success){
+      div.querySelector('.f-link').value = res.url;
+      noteEl.textContent = 'تم رفع الملف، جارِ الحفظ...';
+      saveMyEvidence(id, div);
+    } else {
+      noteEl.textContent = res.message || 'فشل رفع الملف';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+let saveTimers = {};
+function saveMyEvidence(id, div){
+  clearTimeout(saveTimers[id]);
+  saveTimers[id] = setTimeout(async ()=>{
+    const evidenceLink = div.querySelector('.f-link').value.trim();
+    document.getElementById('note-'+id).textContent = 'جارِ الحفظ...';
+    const res = await apiCall({action:'updateEvalEvidence', id, evidenceLink});
+    document.getElementById('note-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
+    renderQrBlock(id, evidenceLink);
+  }, 500);
+}
+
+// ==== تقييم الموظفين (الإدمن) ====
+async function loadAdminStaffList(){
+  const res = await apiCall({action:'getEvalItems', isAdmin:true});
+  if(!res.success) return;
+  allEvalItems = res.items;
+  const names = [...new Set(allEvalItems.map(i=>i.userName))].sort();
+  const sel = document.getElementById('staffSelect');
+  sel.innerHTML = '<option value="">-- اختر --</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
+}
+function loadStaffEval(){
+  const name = document.getElementById('staffSelect').value;
+  const items = allEvalItems.filter(i=>i.userName===name);
+  const total = computeWeightedTotal(items);
+  document.getElementById('staffTotal').textContent = total!==null ? total+'%' : '—';
+  const list = document.getElementById('staffItemsList');
+  list.innerHTML = '';
+  if(!name) return;
+  items.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="item-top">
+        <div class="item-title">${it.element}</div>
+        <span class="weight-badge">الوزن ${it.weight}%</span>
+      </div>
+      ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+      ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
+      <span class="committee-tag">${it.committee}</span>
+      ${it.evidenceLink ? '<div class="readonly-note"><b>شاهد الموظف:</b></div>' : '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>'}
+      <div class="qr-block" id="qr-block-admin-${it.id}"></div>
+      <div class="row">
+        <div class="field">
+          <label>الدرجة (1-5)</label>
+          <input type="number" min="1" max="5" class="f-score" data-id="${it.id}" value="${it.score||''}">
+        </div>
+        <div class="field">
+          <label>ملاحظات المقيّم</label>
+          <input type="text" class="f-rnotes" data-id="${it.id}" value="${it.reviewerNotes||''}">
+        </div>
+      </div>
+      <div class="save-note" id="anote-${it.id}"></div>
+    `;
+    list.appendChild(div);
+    div.querySelectorAll('.f-score, .f-rnotes').forEach(el=>{
+      el.addEventListener('change', ()=>saveScore(it.id, div));
+    });
+    renderQrBlock('admin-'+it.id, it.evidenceLink);
+  });
+}
+function saveScore(id, div){
+  clearTimeout(saveTimers[id]);
+  saveTimers[id] = setTimeout(async ()=>{
+    const score = div.querySelector('.f-score').value;
+    const reviewerNotes = div.querySelector('.f-rnotes').value;
+    document.getElementById('anote-'+id).textContent = 'جارِ الحفظ...';
+    const res = await apiCall({action:'updateEvalScore', id, score, reviewerNotes});
+    document.getElementById('anote-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
+    // تحديث الإجمالي محليًا
+    const idx = allEvalItems.findIndex(i=>i.id===id);
+    if(idx>-1){ allEvalItems[idx].score = score; allEvalItems[idx].reviewerNotes = reviewerNotes; }
+    const name = document.getElementById('staffSelect').value;
+    const items = allEvalItems.filter(i=>i.userName===name);
+    const total = computeWeightedTotal(items);
+    document.getElementById('staffTotal').textContent = total!==null ? total+'%' : '—';
+  }, 500);
+}
+
+// ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
+let galleryItems = [];
+
+async function loadGallery(){
+  const res = await apiCall({action:'getEvidenceGallery'});
+  if(!res.success) return;
+  galleryItems = res.items;
+  populateStandardFilter();
+  populateIndicatorFilter(); // تعبئة كل المؤشرات مباشرة — يقدر يختار المؤشر مباشرة بدون المرور بالمعيار
+  renderFilteredGallery();
+}
+
+function populateStandardFilter(){
+  const sel = document.getElementById('filterStandard');
+  const standards = [...new Set(galleryItems.map(i=>i.standard))].sort();
+  sel.innerHTML = '<option value="">-- كل المعايير --</option>' +
+    standards.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function populateIndicatorFilter(){
+  const standard = document.getElementById('filterStandard').value;
+  const indSel = document.getElementById('filterIndicator');
+  const selectedBefore = indSel.value;
+  const filtered = standard ? galleryItems.filter(i=>i.standard===standard) : galleryItems;
+  const indicators = [...new Map(filtered.filter(i=>i.code).map(i=>[i.code, i.indicatorText])).entries()]
+    .sort((a,b)=>a[0].localeCompare(b[0]));
+  indSel.innerHTML = '<option value="">-- كل المؤشرات --</option>' +
+    indicators.map(([code,text])=>`<option value="${code}">(${code}) ${text}</option>`).join('');
+  // إبقاء اختيار المؤشر إن كان لا يزال ضمن القائمة الجديدة
+  if(indicators.some(([code])=>code===selectedBefore)) indSel.value = selectedBefore;
+}
+
+function onStandardChange(){
+  populateIndicatorFilter();
+  renderFilteredGallery();
+}
+
+function currentFilteredItems(){
+  const standard = document.getElementById('filterStandard').value;
+  const indicator = document.getElementById('filterIndicator').value;
+  return galleryItems.filter(i=>
+    (!standard || i.standard===standard) && (!indicator || i.code===indicator)
+  );
+}
+
+function renderFilteredGallery(){
+  const items = currentFilteredItems();
+  const list = document.getElementById('galleryList');
+  list.innerHTML = '';
+  if(items.length===0){ list.innerHTML = '<div class="readonly-note">لا توجد شواهد مطابقة لهذا الاختيار</div>'; return; }
+  // تجميع حسب المعيار ثم المؤشر
+  const byStandard = {};
+  items.forEach(it=>{
+    const key = it.standard + '|' + (it.code||'—');
+    if(!byStandard[key]) byStandard[key] = { standard: it.standard, code: it.code, indicatorText: it.indicatorText, items: [] };
+    byStandard[key].items.push(it);
+  });
+  Object.values(byStandard).forEach(group=>{
+    const h = document.createElement('div');
+    h.className = 'role-title';
+    h.style.marginTop = '14px';
+    h.textContent = group.code ? `${group.standard} — (${group.code}) ${group.indicatorText}` : group.standard;
+    list.appendChild(h);
+    group.items.forEach(it=>{
+      const div = document.createElement('div');
+      div.className = 'gallery-item';
+      div.innerHTML = `<b>${it.userName}</b> — ${it.element}
+        ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}
+        <div class="qr-block" id="qr-block-g-${it.id}"></div>`;
+      list.appendChild(div);
+      renderQrBlock('g-'+it.id, it.evidenceLink);
+    });
+  });
+}
+
+// ==== تصدير ملف منسّق (طباعة PDF) للمعيار/المؤشر المحدد ====
+function exportFormattedFile(){
+  const items = currentFilteredItems();
+  if(items.length===0){ alert('لا توجد شواهد لتصديرها ضمن هذا الاختيار'); return; }
+  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
+  const indicatorSel = document.getElementById('filterIndicator');
+  const indicatorText = indicatorSel.value ?
+    indicatorSel.options[indicatorSel.selectedIndex].textContent : 'كل المؤشرات';
+
+  const rows = items.map((it,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${it.userName}</td>
+      <td>${it.element}</td>
+      <td>${it.committee}</td>
+      <td>${it.score || '—'}</td>
+      <td><a href="${it.evidenceLink}">${it.evidenceLink}</a></td>
+    </tr>`).join('');
+
+  const html = `
+    <html dir="rtl" lang="ar"><head><meta charset="UTF-8">
+    <title>تقرير الشواهد</title>
+    <style>
+      body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#22312c;}
+      h1{font-size:18px;color:#154d40;border-bottom:2px solid #1f6f5c;padding-bottom:8px;}
+      .meta{font-size:13px;color:#555;margin-bottom:16px;}
+      .meta b{color:#154d40;}
+      table{width:100%;border-collapse:collapse;font-size:12px;}
+      th,td{border:1px solid #ccc;padding:6px 8px;text-align:right;}
+      th{background:#1f6f5c;color:#fff;}
+      tr:nth-child(even){background:#f7f9f8;}
+      .footer{margin-top:20px;font-size:11px;color:#888;}
+    </style></head>
+    <body>
+      <h1>تقرير الشواهد المرتبطة بمعيار التقويم الخارجي</h1>
+      <div class="meta">
+        <b>المعيار:</b> ${standard}<br>
+        <b>المؤشر:</b> ${indicatorText}<br>
+        <b>عدد الشواهد:</b> ${items.length}<br>
+        <b>تاريخ التصدير:</b> ${new Date().toLocaleDateString('ar-SA')}
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>الموظف</th><th>العنصر (معيار الأداء الوظيفي)</th><th>اللجنة المسؤولة</th><th>الدرجة</th><th>رابط الشاهد</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">تم إنشاء هذا التقرير آليًا من نظام متابعة الشواهد وتقييم الأداء الوظيفي.</div>
+      <script>window.onload = () => window.print();<\/script>
+    </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+window.addEventListener('load', async ()=>{
+  const saved = localStorage.getItem('eval_code');
+  if(saved){
+    document.getElementById('codeInput').value = saved;
+    const res = await apiCall({action:'login', code: saved});
+    if(res.success){
+      currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
+      showApp();
+    }
+  }
+});
+</script>
+
+</body>
+</html>
