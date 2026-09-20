@@ -128,12 +128,30 @@
     <div id="galleryTab" class="hidden">
       <div class="card">
         <div class="role-title">معرض الشواهد حسب المعيار والمؤشر</div>
-        <div class="role-sub">كل الشواهد التي أرسلها الموظفون، مرتبة حسب اللجنة المسؤولة</div>
+        <div class="role-sub">اختر المعيار ثم المؤشر لعرض كل الشواهد المرتبطة به، أو اتركهما لعرض الكل</div>
+        <div class="row" style="margin-top:10px;">
+          <div class="field">
+            <label>المعيار</label>
+            <select id="filterStandard" onchange="onStandardChange()">
+              <option value="">-- كل المعايير --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>المؤشر</label>
+            <select id="filterIndicator" onchange="renderFilteredGallery()">
+              <option value="">-- كل المؤشرات --</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للمعيار/المؤشر المحدد</button>
       </div>
       <div id="galleryList"></div>
     </div>
 
   </div>
+
+  <!-- منطقة مخفية تُستخدم للطباعة/التصدير فقط -->
+  <div id="printArea" class="hidden"></div>
 
 </div>
 
@@ -251,6 +269,7 @@ function renderMyItems(items){
         <span class="weight-badge">الوزن ${it.weight}%</span>
       </div>
       ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+      ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
       <span class="committee-tag">${it.committee}</span>
       <div class="row">
         <div class="field">
@@ -375,6 +394,7 @@ function loadStaffEval(){
         <span class="weight-badge">الوزن ${it.weight}%</span>
       </div>
       ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+      ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
       <span class="committee-tag">${it.committee}</span>
       ${it.evidenceLink ? '<div class="readonly-note"><b>شاهد الموظف:</b></div>' : '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>'}
       <div class="qr-block" id="qr-block-admin-${it.id}"></div>
@@ -415,35 +435,133 @@ function saveScore(id, div){
   }, 500);
 }
 
-// ==== معرض الشواهد ====
+// ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
+let galleryItems = [];
+
 async function loadGallery(){
   const res = await apiCall({action:'getEvidenceGallery'});
   if(!res.success) return;
+  galleryItems = res.items;
+  populateStandardFilter();
+  populateIndicatorFilter(); // تعبئة كل المؤشرات مباشرة — يقدر يختار المؤشر مباشرة بدون المرور بالمعيار
+  renderFilteredGallery();
+}
+
+function populateStandardFilter(){
+  const sel = document.getElementById('filterStandard');
+  const standards = [...new Set(galleryItems.map(i=>i.standard))].sort();
+  sel.innerHTML = '<option value="">-- كل المعايير --</option>' +
+    standards.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function populateIndicatorFilter(){
+  const standard = document.getElementById('filterStandard').value;
+  const indSel = document.getElementById('filterIndicator');
+  const selectedBefore = indSel.value;
+  const filtered = standard ? galleryItems.filter(i=>i.standard===standard) : galleryItems;
+  const indicators = [...new Map(filtered.filter(i=>i.code).map(i=>[i.code, i.indicatorText])).entries()]
+    .sort((a,b)=>a[0].localeCompare(b[0]));
+  indSel.innerHTML = '<option value="">-- كل المؤشرات --</option>' +
+    indicators.map(([code,text])=>`<option value="${code}">(${code}) ${text}</option>`).join('');
+  // إبقاء اختيار المؤشر إن كان لا يزال ضمن القائمة الجديدة
+  if(indicators.some(([code])=>code===selectedBefore)) indSel.value = selectedBefore;
+}
+
+function onStandardChange(){
+  populateIndicatorFilter();
+  renderFilteredGallery();
+}
+
+function currentFilteredItems(){
+  const standard = document.getElementById('filterStandard').value;
+  const indicator = document.getElementById('filterIndicator').value;
+  return galleryItems.filter(i=>
+    (!standard || i.standard===standard) && (!indicator || i.code===indicator)
+  );
+}
+
+function renderFilteredGallery(){
+  const items = currentFilteredItems();
   const list = document.getElementById('galleryList');
   list.innerHTML = '';
-  if(res.items.length===0){ list.innerHTML = '<div class="readonly-note">لا توجد شواهد مرسلة بعد</div>'; return; }
-  // تجميع حسب اللجنة
-  const byCommittee = {};
-  res.items.forEach(it=>{
-    if(!byCommittee[it.committee]) byCommittee[it.committee] = [];
-    byCommittee[it.committee].push(it);
+  if(items.length===0){ list.innerHTML = '<div class="readonly-note">لا توجد شواهد مطابقة لهذا الاختيار</div>'; return; }
+  // تجميع حسب المعيار ثم المؤشر
+  const byStandard = {};
+  items.forEach(it=>{
+    const key = it.standard + '|' + (it.code||'—');
+    if(!byStandard[key]) byStandard[key] = { standard: it.standard, code: it.code, indicatorText: it.indicatorText, items: [] };
+    byStandard[key].items.push(it);
   });
-  Object.keys(byCommittee).forEach(committee=>{
+  Object.values(byStandard).forEach(group=>{
     const h = document.createElement('div');
     h.className = 'role-title';
     h.style.marginTop = '14px';
-    h.textContent = committee;
+    h.textContent = group.code ? `${group.standard} — (${group.code}) ${group.indicatorText}` : group.standard;
     list.appendChild(h);
-    byCommittee[committee].forEach(it=>{
+    group.items.forEach(it=>{
       const div = document.createElement('div');
       div.className = 'gallery-item';
-      div.innerHTML = `<b>${it.userName}</b> — ${it.element} ${it.code ? '('+it.code+')' : ''}
+      div.innerHTML = `<b>${it.userName}</b> — ${it.element}
         ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}
         <div class="qr-block" id="qr-block-g-${it.id}"></div>`;
       list.appendChild(div);
       renderQrBlock('g-'+it.id, it.evidenceLink);
     });
   });
+}
+
+// ==== تصدير ملف منسّق (طباعة PDF) للمعيار/المؤشر المحدد ====
+function exportFormattedFile(){
+  const items = currentFilteredItems();
+  if(items.length===0){ alert('لا توجد شواهد لتصديرها ضمن هذا الاختيار'); return; }
+  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
+  const indicatorSel = document.getElementById('filterIndicator');
+  const indicatorText = indicatorSel.value ?
+    indicatorSel.options[indicatorSel.selectedIndex].textContent : 'كل المؤشرات';
+
+  const rows = items.map((it,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${it.userName}</td>
+      <td>${it.element}</td>
+      <td>${it.committee}</td>
+      <td>${it.score || '—'}</td>
+      <td><a href="${it.evidenceLink}">${it.evidenceLink}</a></td>
+    </tr>`).join('');
+
+  const html = `
+    <html dir="rtl" lang="ar"><head><meta charset="UTF-8">
+    <title>تقرير الشواهد</title>
+    <style>
+      body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#22312c;}
+      h1{font-size:18px;color:#154d40;border-bottom:2px solid #1f6f5c;padding-bottom:8px;}
+      .meta{font-size:13px;color:#555;margin-bottom:16px;}
+      .meta b{color:#154d40;}
+      table{width:100%;border-collapse:collapse;font-size:12px;}
+      th,td{border:1px solid #ccc;padding:6px 8px;text-align:right;}
+      th{background:#1f6f5c;color:#fff;}
+      tr:nth-child(even){background:#f7f9f8;}
+      .footer{margin-top:20px;font-size:11px;color:#888;}
+    </style></head>
+    <body>
+      <h1>تقرير الشواهد المرتبطة بمعيار التقويم الخارجي</h1>
+      <div class="meta">
+        <b>المعيار:</b> ${standard}<br>
+        <b>المؤشر:</b> ${indicatorText}<br>
+        <b>عدد الشواهد:</b> ${items.length}<br>
+        <b>تاريخ التصدير:</b> ${new Date().toLocaleDateString('ar-SA')}
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>الموظف</th><th>العنصر (معيار الأداء الوظيفي)</th><th>اللجنة المسؤولة</th><th>الدرجة</th><th>رابط الشاهد</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">تم إنشاء هذا التقرير آليًا من نظام متابعة الشواهد وتقييم الأداء الوظيفي.</div>
+      <script>window.onload = () => window.print();</script>
+    </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
 }
 
 window.addEventListener('load', async ()=>{
