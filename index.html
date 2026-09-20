@@ -51,6 +51,12 @@
   .gallery-item{border-right:4px solid var(--info);padding:8px 12px;margin-bottom:8px;background:#faf9fc;border-radius:6px;font-size:13px;}
   .gallery-item a{color:var(--info);}
   .readonly-note{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:8px;margin-top:6px;}
+  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
+  .qr-box{width:100px;height:100px;background:#fff;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .qr-box img,.qr-box canvas{width:100%;height:100%;}
+  .qr-actions{display:flex;flex-direction:column;gap:6px;}
+  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;}
+  .qr-hint{font-size:11px;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -131,6 +137,7 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyJzPNLJVyGJwsPIvwVwa43CgxoxrTt5ZFftr_4MLD0ikmNqlxL4HnGfqOs4EkE_zuqNw/exec";
 
@@ -247,10 +254,17 @@ function renderMyItems(items){
       <span class="committee-tag">${it.committee}</span>
       <div class="row">
         <div class="field">
-          <label>رابط الشاهد (ترفعه أنت)</label>
+          <label>رابط الشاهد (رابط جاهز)</label>
           <input type="text" class="f-link" data-id="${it.id}" value="${it.evidenceLink||''}" placeholder="https://...">
         </div>
       </div>
+      <div class="row">
+        <div class="field">
+          <label>أو ارفع صورة/ملف PDF مباشرة (يُحفظ تلقائيًا ويُنشئ الرابط والرمز)</label>
+          <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+        </div>
+      </div>
+      <div class="qr-block" id="qr-block-${it.id}"></div>
       <div class="save-note" id="note-${it.id}"></div>
       <div class="readonly-note">
         <b>درجة المقيّم:</b> ${it.score ? it.score+' / 5' : 'لم تُدخَل بعد'}
@@ -259,8 +273,70 @@ function renderMyItems(items){
     `;
     list.appendChild(div);
     div.querySelector('.f-link').addEventListener('change', ()=>saveMyEvidence(it.id, div));
+    div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
+    renderQrBlock(it.id, it.evidenceLink);
   });
 }
+
+function renderQrBlock(id, link){
+  const box = document.getElementById('qr-block-'+id);
+  if(!box) return;
+  box.innerHTML = '';
+  if(!link) return;
+  const a = document.createElement('a');
+  a.href = link; a.target = '_blank'; a.rel = 'noopener';
+  const qrDiv = document.createElement('div');
+  qrDiv.className = 'qr-box';
+  qrDiv.id = 'qr-img-'+id;
+  a.appendChild(qrDiv);
+
+  const actions = document.createElement('div');
+  actions.className = 'qr-actions';
+  actions.innerHTML = `
+    <span class="qr-hint">اضغط الرمز لفتح الشاهد</span>
+    <button type="button" onclick="downloadQr('${id}')">تنزيل الرمز كصورة</button>
+  `;
+  box.appendChild(a);
+  box.appendChild(actions);
+  new QRCode(qrDiv, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
+}
+
+function downloadQr(id){
+  const container = document.getElementById('qr-img-'+id);
+  if(!container) return;
+  const canvas = container.querySelector('canvas');
+  const img = container.querySelector('img');
+  const dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+  if(!dataUrl) return;
+  const link = document.createElement('a');
+  link.href = dataUrl; link.download = 'qr-' + id + '.png';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+async function uploadEvidenceFile(id, div, file){
+  if(!file) return;
+  const noteEl = document.getElementById('note-'+id);
+  const maxMB = 8;
+  if(file.size > maxMB*1024*1024){
+    noteEl.textContent = `الملف كبير (أكبر من ${maxMB}MB) — اختر ملفًا أصغر`;
+    return;
+  }
+  noteEl.textContent = 'جارِ رفع الملف...';
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64Data = reader.result.split(',')[1];
+    const res = await apiCall({ action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data });
+    if(res.success){
+      div.querySelector('.f-link').value = res.url;
+      noteEl.textContent = 'تم رفع الملف، جارِ الحفظ...';
+      saveMyEvidence(id, div);
+    } else {
+      noteEl.textContent = res.message || 'فشل رفع الملف';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
 let saveTimers = {};
 function saveMyEvidence(id, div){
   clearTimeout(saveTimers[id]);
@@ -269,6 +345,7 @@ function saveMyEvidence(id, div){
     document.getElementById('note-'+id).textContent = 'جارِ الحفظ...';
     const res = await apiCall({action:'updateEvalEvidence', id, evidenceLink});
     document.getElementById('note-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
+    renderQrBlock(id, evidenceLink);
   }, 500);
 }
 
@@ -299,7 +376,8 @@ function loadStaffEval(){
       </div>
       ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
       <span class="committee-tag">${it.committee}</span>
-      ${it.evidenceLink ? `<div class="readonly-note"><b>شاهد الموظف:</b> <a href="${it.evidenceLink}" target="_blank">فتح الشاهد</a></div>` : '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>'}
+      ${it.evidenceLink ? '<div class="readonly-note"><b>شاهد الموظف:</b></div>' : '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>'}
+      <div class="qr-block" id="qr-block-admin-${it.id}"></div>
       <div class="row">
         <div class="field">
           <label>الدرجة (1-5)</label>
@@ -316,6 +394,7 @@ function loadStaffEval(){
     div.querySelectorAll('.f-score, .f-rnotes').forEach(el=>{
       el.addEventListener('change', ()=>saveScore(it.id, div));
     });
+    renderQrBlock('admin-'+it.id, it.evidenceLink);
   });
 }
 function saveScore(id, div){
@@ -359,9 +438,10 @@ async function loadGallery(){
       const div = document.createElement('div');
       div.className = 'gallery-item';
       div.innerHTML = `<b>${it.userName}</b> — ${it.element} ${it.code ? '('+it.code+')' : ''}
-        ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}<br>
-        <a href="${it.evidenceLink}" target="_blank">فتح الشاهد</a>`;
+        ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}
+        <div class="qr-block" id="qr-block-g-${it.id}"></div>`;
       list.appendChild(div);
+      renderQrBlock('g-'+it.id, it.evidenceLink);
     });
   });
 }
