@@ -3,521 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظام متابعة مصادر البيانات والوثائق - التقويم الخارجي 2026</title>
+<title>بوابة أدوات المدرسة</title>
 <style>
   :root{
     --primary:#1f6f5c; --primary-dark:#154d40; --accent:#e08a1e;
-    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76;
-    --border:#dfe7e4; --ok:#2e8b57; --mid:#e08a1e; --no:#c0392b;
+    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76; --border:#dfe7e4;
   }
   *{box-sizing:border-box;}
   body{font-family:'Tahoma','Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
-  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px 16px;text-align:center;}
-  header h1{margin:0;font-size:19px;}
-  header p{margin:6px 0 0;font-size:13px;opacity:.9;}
-  .wrap{max-width:960px;margin:0 auto;padding:16px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
-  #loginBox{max-width:420px;margin:40px auto;}
-  #loginBox input{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:20px;letter-spacing:4px;text-align:center;margin-top:8px;}
-  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-size:15px;cursor:pointer;margin-top:14px;width:100%;}
-  #loginBox button:hover, .btn:hover{background:var(--primary-dark);}
-  #loginMsg{color:var(--no);font-size:13px;margin-top:8px;}
-  .hidden{display:none;}
-  .role-title{font-size:17px;font-weight:bold;color:var(--primary-dark);}
-  .role-sub{font-size:12px;color:var(--muted);}
-  .item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
-  .item-title{font-weight:bold;margin-bottom:4px;}
-  .item-domain{display:inline-block;font-size:11px;background:#e8f2ef;color:var(--primary-dark);border-radius:12px;padding:2px 9px;margin-bottom:6px;}
-  .item-user{display:inline-block;font-size:11px;background:#f0e9f8;color:#5b3a91;border-radius:12px;padding:2px 9px;margin-bottom:6px;margin-inline-start:4px;}
-  .item-hint{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:6px 8px;margin-bottom:8px;}
-  .item-hint b{color:var(--accent);}
-  .row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
-  .row label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px;}
-  .field{flex:1;min-width:130px;}
-  select,input[type=text],input[type=number],textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;}
-  .status-لم_يبدأ{border-right:5px solid var(--no);}
-  .status-قيد_التنفيذ{border-right:5px solid var(--mid);}
-  .status-مكتمل{border-right:5px solid var(--ok);}
-  .save-note{font-size:11px;color:var(--muted);margin-top:4px;min-height:14px;}
-  .progress-bar{height:8px;background:#e5eae8;border-radius:4px;overflow:hidden;margin-top:6px;}
-  .progress-fill{height:100%;background:var(--ok);}
-  .dash-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:6px;flex-wrap:wrap;}
-  .dash-role{font-weight:bold;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
-  .logout{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
-  .summary-total{font-size:13px;color:var(--muted);margin-bottom:10px;}
-  .toggle-group{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-  .toggle-btn{flex:1;min-width:100px;padding:8px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;width:auto;margin:0;}
-  .toggle-btn.active{background:var(--primary);color:#fff;}
-  .updated-flag{display:flex;align-items:center;gap:6px;font-size:13px;background:#f0f7f4;border-radius:6px;padding:8px;margin-bottom:8px;}
-  .updated-flag input{width:auto;}
-  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-  .qr-box{width:100px;height:100px;background:#fff;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .qr-box img,.qr-box canvas{width:100%;height:100%;}
-  .qr-actions{display:flex;flex-direction:column;gap:6px;}
-  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;}
-  .qr-hint{font-size:11px;color:var(--muted);}
-  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .tab-btn{padding:8px 14px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;}
-  .tab-btn.active{background:var(--primary);color:#fff;}
-  .gallery-item{border-right:4px solid var(--info,#5b3a91);padding:8px 12px;margin-bottom:8px;background:#faf9fc;border-radius:6px;font-size:13px;}
+  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:36px 16px 44px;text-align:center;}
+  header h1{margin:0;font-size:24px;}
+  header p{margin:8px 0 0;font-size:14px;opacity:.9;}
+  .wrap{max-width:900px;margin:-24px auto 0;padding:0 16px 40px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;}
+  .tile{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;text-align:center;box-shadow:0 4px 14px rgba(21,77,64,.08);text-decoration:none;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:10px;transition:transform .15s, box-shadow .15s;}
+  .tile:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(21,77,64,.14);}
+  .tile .icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;background:#e8f2ef;}
+  .tile.eval .icon{background:#f0e9f8;}
+  .tile h2{margin:4px 0 0;font-size:16px;color:var(--primary-dark);}
+  .tile p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .tile .go{margin-top:6px;font-size:12px;color:var(--primary);font-weight:bold;}
+  footer{text-align:center;font-size:12px;color:var(--muted);padding:20px;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>نظام متابعة مصادر البيانات والوثائق</h1>
+  <h1>بوابة أدوات المدرسة</h1>
   <p>الاستعداد للتقويم الخارجي 2026</p>
 </header>
 
 <div class="wrap">
+  <div class="grid">
 
-  <div id="loginBox" class="card">
-    <div class="role-title">تسجيل الدخول</div>
-    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري الخاص (PIN)</label>
-    <input type="text" inputmode="numeric" id="codeInput" placeholder="••••" maxlength="8">
-    <button onclick="doLogin()">دخول</button>
-    <div id="loginMsg"></div>
+    <a class="tile" href="readiness-tracker.html">
+      <div class="icon">📋</div>
+      <h2>متابعة مصادر البيانات والوثائق</h2>
+      <p>تتبّع شواهد كل دور حسب المجالات الأربعة والمعايير الفرعية الرسمية، برموز QR وتصدير تقارير</p>
+      <span class="go">فتح ←</span>
+    </a>
+
+    <a class="tile eval" href="staff-evaluation.html">
+      <div class="icon">⭐</div>
+      <h2>تقييم الأداء الوظيفي</h2>
+      <p>معايير أداء شاغلي الوظائف التعليمية مرتبطة بمؤشرات التقويم الخارجي ولجان الدليل التنظيمي</p>
+      <span class="go">فتح ←</span>
+    </a>
+
   </div>
-
-  <div id="appBox" class="hidden">
-    <div class="topbar">
-      <div>
-        <div class="role-title" id="roleTitle"></div>
-        <div class="role-sub" id="roleSub"></div>
-      </div>
-      <button class="logout" onclick="logout()">تسجيل خروج</button>
-    </div>
-
-    <div class="tabs" id="tabsBar"></div>
-
-    <div id="myTab">
-      <div id="adminDash" class="card hidden">
-        <div class="topbar"><div class="role-title">نظرة عامة</div></div>
-        <div class="toggle-group">
-          <button class="toggle-btn active" id="btnByRole" onclick="switchGroup('role')">حسب الدور</button>
-          <button class="toggle-btn" id="btnByUser" onclick="switchGroup('user')">حسب الموظف</button>
-          <button class="toggle-btn" id="btnByDomain" onclick="switchGroup('domain')">حسب المجالات</button>
-        </div>
-        <div id="dashRows"></div>
-      </div>
-
-      <div class="card">
-        <div class="summary-total" id="summaryTotal"></div>
-        <div id="itemsList"></div>
-      </div>
-    </div>
-
-    <div id="galleryTab" class="hidden">
-      <div class="card">
-        <div class="role-title">معرض الشواهد حسب المعيار والمؤشر (التقويم الخارجي)</div>
-        <div class="role-sub">اختر المعيار و/أو المؤشر لعرض كل الشواهد المرتبطة به من جميع الأدوار</div>
-        <div class="row" style="margin-top:10px;">
-          <div class="field">
-            <label>المعيار</label>
-            <select id="filterStandard" onchange="onStandardChange()">
-              <option value="">-- كل المعايير --</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>المؤشر</label>
-            <select id="filterIndicator" onchange="renderFilteredGallery()">
-              <option value="">-- كل المؤشرات --</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للمعيار/المؤشر المحدد</button>
-      </div>
-      <div id="galleryList"></div>
-    </div>
-  </div>
-
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-// ====== غيّر هذا الرابط برابط الـ Web App الخاص بك بعد النشر من Apps Script ======
-const API_URL = "https://script.google.com/macros/s/AKfycbyJzPNLJVyGJwsPIvwVwa43CgxoxrTt5ZFftr_4MLD0ikmNqlxL4HnGfqOs4EkE_zuqNw/exec";
-
-let currentUser = null;
-let currentRole = null;
-let isAdmin = false;
-let currentGroupBy = 'role';
-
-async function apiCall(payload){
-  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-  return res.json();
-}
-
-async function doLogin(){
-  const code = document.getElementById('codeInput').value.trim();
-  if(!code){ return; }
-  document.getElementById('loginMsg').textContent = 'جارِ التحقق...';
-  const res = await apiCall({action:'login', code: code});
-  if(res.success){
-    currentUser = res.userName;
-    currentRole = res.role;
-    isAdmin = res.isAdmin;
-    localStorage.setItem('rt_code', code);
-    showApp();
-  } else {
-    document.getElementById('loginMsg').textContent = res.message || 'خطأ في تسجيل الدخول';
-  }
-}
-
-function logout(){
-  localStorage.removeItem('rt_code');
-  location.reload();
-}
-
-async function showApp(){
-  document.getElementById('loginBox').classList.add('hidden');
-  document.getElementById('appBox').classList.remove('hidden');
-  document.getElementById('roleTitle').textContent = isAdmin ? 'عرض شامل لكل الموظفين' : currentUser;
-  document.getElementById('roleSub').textContent = isAdmin ? '' : currentRole;
-
-  const tabs = document.getElementById('tabsBar');
-  tabs.innerHTML = '';
-  if(isAdmin){
-    addTab(tabs, 'المتابعة', 'myTab', true);
-    addTab(tabs, 'معرض الشواهد', 'galleryTab', false);
-    document.getElementById('adminDash').classList.remove('hidden');
-    loadDashboard();
-  }
-  loadItems();
-}
-
-function addTab(container, label, targetId, active){
-  const btn = document.createElement('button');
-  btn.className = 'tab-btn' + (active ? ' active' : '');
-  btn.textContent = label;
-  btn.onclick = ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    ['myTab','galleryTab'].forEach(id=>{
-      document.getElementById(id).classList.toggle('hidden', id!==targetId);
-    });
-    if(targetId==='galleryTab') loadGallery();
-  };
-  container.appendChild(btn);
-}
-
-function switchGroup(g){
-  currentGroupBy = g;
-  document.getElementById('btnByRole').classList.toggle('active', g==='role');
-  document.getElementById('btnByUser').classList.toggle('active', g==='user');
-  document.getElementById('btnByDomain').classList.toggle('active', g==='domain');
-  loadDashboard();
-}
-
-async function loadDashboard(){
-  const res = await apiCall({action:'getDashboard', groupBy: currentGroupBy});
-  if(!res.success) return;
-  const box = document.getElementById('dashRows');
-  box.innerHTML = '';
-  res.summary.forEach(s=>{
-    const div = document.createElement('div');
-    div.className = 'dash-row';
-    div.innerHTML = `<span class="dash-role">${s.group}</span>
-      <span>${s.done}/${s.total} مكتمل — محدّث: ${s.updated}/${s.total} — متوسط الإنجاز ${s.avgProgress}%</span>`;
-    box.appendChild(div);
-  });
-}
-
-async function loadItems(){
-  const res = await apiCall({action:'getItems', userName: currentUser, isAdmin: isAdmin});
-  if(!res.success) return;
-  const list = document.getElementById('itemsList');
-  list.innerHTML = '';
-  const done = res.items.filter(i=>i.status==='مكتمل').length;
-  const updated = res.items.filter(i=>i.updated).length;
-  document.getElementById('summaryTotal').textContent =
-    `عدد البنود: ${res.items.length} — مكتمل: ${done} — محدّث: ${updated}`;
-
-  res.items.forEach(it=>{
-    const div = document.createElement('div');
-    const statusClass = 'status-' + it.status.replace(/ /g,'_');
-    div.className = 'item ' + statusClass;
-    div.innerHTML = `
-      <div class="item-domain">${it.domain}</div>
-      ${isAdmin ? `<div class="item-user">${it.userName} — ${it.role}</div>` : ''}
-      <div class="item-title">${it.item}</div>
-      ${it.hint ? `<div class="item-hint"><b>أبرز ما ينبغي أن يظهر فيه:</b> ${it.hint}</div>` : ''}
-      <div class="updated-flag">
-        <input type="checkbox" class="f-updated" data-id="${it.id}" ${it.updated?'checked':''}>
-        <label style="margin:0;">محدّث لآخر فترة (وليس فقط موجود)</label>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>الحالة</label>
-          <select data-id="${it.id}" class="f-status">
-            <option ${it.status==='لم يبدأ'?'selected':''}>لم يبدأ</option>
-            <option ${it.status==='قيد التنفيذ'?'selected':''}>قيد التنفيذ</option>
-            <option ${it.status==='مكتمل'?'selected':''}>مكتمل</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>نسبة الإنجاز (%)</label>
-          <input type="number" min="0" max="100" class="f-progress" data-id="${it.id}" value="${it.progress||0}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>ملاحظات</label>
-          <textarea class="f-notes" data-id="${it.id}" rows="2">${it.notes||''}</textarea>
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>رابط الشاهد (رابط جاهز — Drive أو أي مكان)</label>
-          <input type="text" class="f-link" data-id="${it.id}" placeholder="https://..." value="${it.evidenceLink||''}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>أو ارفع صورة/ملف مباشرة (يُحفظ تلقائيًا ويُنشئ رابط الشاهد)</label>
-          <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
-        </div>
-      </div>
-      <div class="qr-block" id="qr-block-${it.id}"></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${it.progress||0}%"></div></div>
-      <div class="save-note" id="note-${it.id}"></div>
-    `;
-    list.appendChild(div);
-
-    div.querySelectorAll('select, input:not(.f-file), textarea').forEach(el=>{
-      el.addEventListener('change', ()=>saveItem(it.id, div));
-    });
-
-    div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
-
-    renderQrBlock(it.id, it.evidenceLink);
-  });
-}
-
-async function uploadEvidenceFile(id, div, file){
-  if(!file) return;
-  const noteEl = document.getElementById('note-'+id);
-  const maxMB = 8;
-  if(file.size > maxMB*1024*1024){
-    noteEl.textContent = `الملف كبير (أكبر من ${maxMB}MB) — اختر ملفًا أصغر`;
-    return;
-  }
-  noteEl.textContent = 'جارِ رفع الملف...';
-  const reader = new FileReader();
-  reader.onload = async () => {
-    const base64Data = reader.result.split(',')[1];
-    const res = await apiCall({
-      action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data
-    });
-    if(res.success){
-      div.querySelector('.f-link').value = res.url;
-      noteEl.textContent = 'تم رفع الملف، جارِ الحفظ...';
-      saveItem(id, div);
-    } else {
-      noteEl.textContent = res.message || 'فشل رفع الملف';
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-function renderQrBlock(id, link){
-  const box = document.getElementById('qr-block-'+id);
-  if(!box) return;
-  box.innerHTML = '';
-  if(!link){ return; }
-  const a = document.createElement('a');
-  a.href = link; a.target = '_blank'; a.rel = 'noopener';
-  const qrDiv = document.createElement('div');
-  qrDiv.className = 'qr-box';
-  qrDiv.id = 'qr-img-'+id;
-  a.appendChild(qrDiv);
-
-  const actions = document.createElement('div');
-  actions.className = 'qr-actions';
-  actions.innerHTML = `
-    <span class="qr-hint">اضغط الرمز لفتح الشاهد</span>
-    <button type="button" onclick="downloadQr('${id}')">تنزيل الرمز كصورة</button>
-  `;
-
-  box.appendChild(a);
-  box.appendChild(actions);
-
-  new QRCode(qrDiv, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
-}
-
-function downloadQr(id){
-  const container = document.getElementById('qr-img-'+id);
-  if(!container) return;
-  const canvas = container.querySelector('canvas');
-  const img = container.querySelector('img');
-  let dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
-  if(!dataUrl) return;
-  const link = document.createElement('a');
-  link.href = dataUrl;
-  link.download = 'qr-' + id + '.png';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-let saveTimers = {};
-function saveItem(id, div){
-  clearTimeout(saveTimers[id]);
-  saveTimers[id] = setTimeout(async ()=>{
-    const status = div.querySelector('.f-status').value;
-    const updated = div.querySelector('.f-updated').checked;
-    const progress = div.querySelector('.f-progress').value;
-    const notes = div.querySelector('.f-notes').value;
-    const evidenceLink = div.querySelector('.f-link').value.trim();
-    document.getElementById('note-'+id).textContent = 'جارِ الحفظ...';
-    const res = await apiCall({action:'updateItem', id, status, updated, progress, notes, evidenceLink});
-    document.getElementById('note-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
-    div.querySelector('.progress-fill').style.width = (progress||0)+'%';
-    div.className = div.className.replace(/status-\S+/,'') + ' status-' + status.replace(/ /g,'_');
-    renderQrBlock(id, evidenceLink);
-    if(isAdmin) loadDashboard();
-  }, 500);
-}
-
-// ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
-let galleryItems = [];
-
-async function loadGallery(){
-  const res = await apiCall({action:'getReadinessGallery'});
-  if(!res.success) return;
-  galleryItems = res.items;
-  populateStandardFilter();
-  populateIndicatorFilter();
-  renderFilteredGallery();
-}
-
-function populateStandardFilter(){
-  const sel = document.getElementById('filterStandard');
-  const standards = [...new Set(galleryItems.map(i=>i.standard))].sort();
-  sel.innerHTML = '<option value="">-- كل المعايير --</option>' +
-    standards.map(s=>`<option value="${s}">${s}</option>`).join('');
-}
-
-function populateIndicatorFilter(){
-  const standard = document.getElementById('filterStandard').value;
-  const indSel = document.getElementById('filterIndicator');
-  const selectedBefore = indSel.value;
-  const filtered = standard ? galleryItems.filter(i=>i.standard===standard) : galleryItems;
-  const indicators = [...new Map(filtered.filter(i=>i.code).map(i=>[i.code, i.indicatorText])).entries()]
-    .sort((a,b)=>a[0].localeCompare(b[0]));
-  indSel.innerHTML = '<option value="">-- كل المؤشرات --</option>' +
-    indicators.map(([code,text])=>`<option value="${code}">(${code}) ${text}</option>`).join('');
-  if(indicators.some(([code])=>code===selectedBefore)) indSel.value = selectedBefore;
-}
-
-function onStandardChange(){
-  populateIndicatorFilter();
-  renderFilteredGallery();
-}
-
-function currentFilteredGalleryItems(){
-  const standard = document.getElementById('filterStandard').value;
-  const indicator = document.getElementById('filterIndicator').value;
-  return galleryItems.filter(i=>
-    (!standard || i.standard===standard) && (!indicator || i.code===indicator)
-  );
-}
-
-function renderFilteredGallery(){
-  const items = currentFilteredGalleryItems();
-  const list = document.getElementById('galleryList');
-  list.innerHTML = '';
-  if(items.length===0){ list.innerHTML = '<div class="save-note">لا توجد شواهد مطابقة لهذا الاختيار</div>'; return; }
-  const byGroup = {};
-  items.forEach(it=>{
-    const key = it.standard + '|' + (it.code||'—');
-    if(!byGroup[key]) byGroup[key] = { standard: it.standard, code: it.code, indicatorText: it.indicatorText, items: [] };
-    byGroup[key].items.push(it);
-  });
-  Object.values(byGroup).forEach(group=>{
-    const h = document.createElement('div');
-    h.className = 'role-title';
-    h.style.marginTop = '14px';
-    h.textContent = group.code ? `${group.standard} — (${group.code}) ${group.indicatorText}` : group.standard;
-    list.appendChild(h);
-    group.items.forEach(it=>{
-      const div = document.createElement('div');
-      div.className = 'gallery-item';
-      div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
-        ${it.status ? ' — الحالة: '+it.status : ''}
-        <div class="qr-block" id="qr-block-g-${it.id}"></div>`;
-      list.appendChild(div);
-      renderQrBlock('g-'+it.id, it.evidenceLink);
-    });
-  });
-}
-
-function exportFormattedFile(){
-  const items = currentFilteredGalleryItems();
-  if(items.length===0){ alert('لا توجد شواهد لتصديرها ضمن هذا الاختيار'); return; }
-  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
-  const indicatorSel = document.getElementById('filterIndicator');
-  const indicatorText = indicatorSel.value ?
-    indicatorSel.options[indicatorSel.selectedIndex].textContent : 'كل المؤشرات';
-
-  const rows = items.map((it,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${it.userName}</td>
-      <td>${it.role}</td>
-      <td>${it.item}</td>
-      <td>${it.status||'—'}</td>
-      <td><a href="${it.evidenceLink}">${it.evidenceLink}</a></td>
-    </tr>`).join('');
-
-  const html = `
-    <html dir="rtl" lang="ar"><head><meta charset="UTF-8">
-    <title>تقرير شواهد التقويم الخارجي</title>
-    <style>
-      body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#22312c;}
-      h1{font-size:18px;color:#154d40;border-bottom:2px solid #1f6f5c;padding-bottom:8px;}
-      .meta{font-size:13px;color:#555;margin-bottom:16px;}
-      .meta b{color:#154d40;}
-      table{width:100%;border-collapse:collapse;font-size:12px;}
-      th,td{border:1px solid #ccc;padding:6px 8px;text-align:right;}
-      th{background:#1f6f5c;color:#fff;}
-      tr:nth-child(even){background:#f7f9f8;}
-      .footer{margin-top:20px;font-size:11px;color:#888;}
-    </style></head>
-    <body>
-      <h1>تقرير الشواهد المرتبطة بمعيار التقويم الخارجي</h1>
-      <div class="meta">
-        <b>المعيار:</b> ${standard}<br>
-        <b>المؤشر:</b> ${indicatorText}<br>
-        <b>عدد الشواهد:</b> ${items.length}<br>
-        <b>تاريخ التصدير:</b> ${new Date().toLocaleDateString('ar-SA')}
-      </div>
-      <table>
-        <thead><tr><th>#</th><th>الموظف</th><th>الدور</th><th>البند</th><th>الحالة</th><th>رابط الشاهد</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      <div class="footer">تم إنشاء هذا التقرير آليًا من نظام متابعة مصادر البيانات والوثائق.</div>
-      <script>window.onload = () => window.print();<\/script>
-    </body></html>`;
-
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
-}
-
-window.addEventListener('load', async ()=>{
-  const saved = localStorage.getItem('rt_code');
-  if(saved){
-    document.getElementById('codeInput').value = saved;
-    const res = await apiCall({action:'login', code: saved});
-    if(res.success){
-      currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
-      showApp();
-    }
-  }
-});
-</script>
+<footer>ثانوية طويق الأولى</footer>
 
 </body>
 </html>
