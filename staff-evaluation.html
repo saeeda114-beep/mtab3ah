@@ -423,10 +423,10 @@ async function uploadEvidenceFile(id, div, file){
     const base64Data = reader.result.split(',')[1];
     const res = await apiCall({ action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data });
     if(res.success){
-      const addRes = await apiCall({action:'addEvalEvidenceMulti', itemId:id, userName: currentUser, evidenceLink: res.url});
+      const addRes = await apiCall({action:'addEvalEvidenceMulti', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name});
       if(addRes.success){
         if(!evidenceByEvalItem[id]) evidenceByEvalItem[id] = [];
-        evidenceByEvalItem[id].push({ id: addRes.id, itemId:id, userName: currentUser, evidenceLink: res.url });
+        evidenceByEvalItem[id].push({ id: addRes.id, itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
         renderEvalEvidenceList(id);
         noteEl.textContent = 'تم رفع الملف وإضافته ✓';
       } else {
