@@ -2,58 +2,141 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>بوابة أدوات المدرسة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary:#1f6f5c; --primary-dark:#154d40; --accent:#e08a1e;
-    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76; --border:#dfe7e4;
+    --paper:#f6f4ee; --ink:#1c2b22; --primary:#0e6b4f; --primary-dark:#082c20;
+    --gold:#b1873f; --gold-soft:#e7d9bb; --line:#dcd7c6; --muted:#6b6559;
+    --font-ui:'IBM Plex Sans Arabic',Tahoma,sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box;}
-  body{font-family:'Tahoma','Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
-  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:36px 16px 44px;text-align:center;}
-  header h1{margin:0;font-size:24px;}
-  header p{margin:8px 0 0;font-size:14px;opacity:.9;}
-  .wrap{max-width:900px;margin:-24px auto 0;padding:0 16px 40px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;}
-  .tile{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;text-align:center;box-shadow:0 4px 14px rgba(21,77,64,.08);text-decoration:none;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:10px;transition:transform .15s, box-shadow .15s;}
-  .tile:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(21,77,64,.14);}
-  .tile .icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;background:#e8f2ef;}
-  .tile.eval .icon{background:#f0e9f8;}
-  .tile h2{margin:4px 0 0;font-size:16px;color:var(--primary-dark);}
-  .tile p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.6;}
-  .tile .go{margin-top:6px;font-size:12px;color:var(--primary);font-weight:bold;}
-  footer{text-align:center;font-size:12px;color:var(--muted);padding:20px;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:var(--font-ui);background:var(--paper);color:var(--ink);margin:0;padding:0;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+
+  header{
+    position:relative;overflow:hidden;
+    background:var(--primary-dark);color:#f4f1e6;text-align:center;
+    padding:52px 20px 40px;
+  }
+  header::before{
+    content:"";position:absolute;inset:0;opacity:.06;pointer-events:none;
+    background:repeating-linear-gradient(135deg,#fff 0 2px,transparent 2px 22px);
+  }
+  header .inner{position:relative;}
+  header .kicker{
+    font-size:12.5px;letter-spacing:.03em;color:var(--gold-soft);margin:0 0 14px;
+  }
+  .rule{width:56px;height:2px;background:var(--gold);margin:0 auto 16px;}
+  header h1{margin:0;font-size:27px;font-weight:700;line-height:1.35;}
+  header p.sub{margin:10px 0 0;font-size:14px;color:#c9dccf;}
+  .home-link{
+    display:inline-block;margin-top:20px;font-size:12.5px;color:var(--gold-soft);
+    text-decoration:none;border-bottom:1px solid rgba(231,217,187,.4);padding-bottom:2px;
+  }
+
+  .wrap{max-width:740px;margin:0 auto;padding:40px 18px 20px;}
+  .section-label{
+    display:flex;align-items:baseline;justify-content:space-between;
+    font-size:12.5px;color:var(--muted);margin:0 0 16px;padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-label span.count{font-family:var(--font-mono);color:var(--gold);}
+
+  .list{
+    display:flex;flex-direction:column;
+    opacity:0;transform:translateY(10px);
+    animation:reveal .5s ease-out .1s forwards;
+  }
+  @keyframes reveal{ to{ opacity:1; transform:translateY(0); } }
+  @media (prefers-reduced-motion:reduce){ .list{ animation:none; opacity:1; transform:none; } }
+
+  .row-link{
+    display:flex;align-items:center;gap:18px;text-decoration:none;color:var(--ink);
+    padding:22px 8px;border-bottom:1px solid var(--line);transition:background .12s;
+  }
+  .row-link:first-child{border-top:1px solid var(--line);}
+  .row-link:hover{background:#efece0;}
+  .row-link:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+  .row-num{
+    font-family:var(--font-mono);font-size:13px;color:var(--gold);font-weight:600;
+    width:26px;flex-shrink:0;
+  }
+  .row-icon{
+    width:48px;height:48px;flex-shrink:0;border-radius:10px;background:var(--primary);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;
+  }
+  .row-icon.eval{background:var(--gold);}
+  .row-body{flex:1;min-width:0;}
+  .row-body h2{margin:0 0 5px;font-size:16.5px;font-weight:600;color:var(--primary-dark);}
+  .row-body p{margin:0;font-size:13px;color:var(--muted);line-height:1.7;}
+  .row-arrow{font-size:19px;color:var(--muted);flex-shrink:0;}
+
+  footer{
+    max-width:740px;margin:0 auto;padding:26px 18px 40px;text-align:center;
+  }
+  footer .rule{margin-bottom:14px;}
+  footer p{margin:0;font-size:12px;color:var(--muted);}
+  footer .rev{font-family:var(--font-mono);color:var(--gold);}
+
+  @media (max-width:480px){
+    header{padding:44px 18px 34px;}
+    header h1{font-size:22px;}
+    .row-body h2{font-size:15px;}
+    .row-body p{font-size:12.5px;}
+    .row-icon{width:42px;height:42px;font-size:18px;}
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>بوابة أدوات المدرسة</h1>
-  <p>الاستعداد للتقويم الخارجي 2026</p>
+  <div class="inner">
+    <p class="kicker">متوسطة الحارث بن هشام</p>
+    <div class="rule"></div>
+    <h1>بوابة أدوات المدرسة</h1>
+    <p class="sub">الاستعداد للتقويم الخارجي 2026</p>
+  </div>
 </header>
 
 <div class="wrap">
-  <div class="grid">
+  <p class="section-label"><span>الأنظمة المتاحة</span><span class="count">02</span></p>
+  <div class="list">
 
-    <a class="tile" href="readiness-tracker.html">
-      <div class="icon">📋</div>
-      <h2>متابعة مصادر البيانات والوثائق</h2>
-      <p>تتبّع شواهد كل دور حسب المجالات الأربعة والمعايير الفرعية الرسمية، برموز QR وتصدير تقارير</p>
-      <span class="go">فتح ←</span>
+    <a class="row-link" href="readiness-tracker.html">
+      <span class="row-num">01</span>
+      <span class="row-icon">📋</span>
+      <span class="row-body">
+        <h2>متابعة مصادر البيانات والوثائق</h2>
+        <p>شواهد كل دور حسب المجالات الأربعة والمعايير الفرعية الرسمية، برموز QR وتصدير تقارير</p>
+      </span>
+      <span class="row-arrow">←</span>
     </a>
 
-    <a class="tile eval" href="staff-evaluation.html">
-      <div class="icon">⭐</div>
-      <h2>تقييم الأداء الوظيفي</h2>
-      <p>معايير أداء شاغلي الوظائف التعليمية مرتبطة بمؤشرات التقويم الخارجي ولجان الدليل التنظيمي</p>
-      <span class="go">فتح ←</span>
+    <a class="row-link" href="staff-evaluation.html">
+      <span class="row-num">02</span>
+      <span class="row-icon eval">⭐</span>
+      <span class="row-body">
+        <h2>تقييم الأداء الوظيفي</h2>
+        <p>معايير أداء شاغلي الوظائف التعليمية مرتبطة بمؤشرات التقويم الخارجي ولجان الدليل التنظيمي</p>
+      </span>
+      <span class="row-arrow">←</span>
     </a>
 
   </div>
 </div>
 
-<footer>متوسطة الحارث بن هشام</footer>
+<footer>
+  <div class="rule" style="margin-inline:auto;"></div>
+  <p>نظام داخلي — متوسطة الحارث بن هشام <span class="rev">· مراجعة 2026</span></p>
+</footer>
 
 </body>
 </html>
