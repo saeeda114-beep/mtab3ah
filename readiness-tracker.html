@@ -2,73 +2,95 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>نظام متابعة مصادر البيانات والوثائق - التقويم الخارجي 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary:#1f6f5c; --primary-dark:#154d40; --accent:#e08a1e;
-    --bg:#f4f7f6; --card:#ffffff; --text:#22312c; --muted:#6b7b76;
-    --border:#dfe7e4; --ok:#2e8b57; --mid:#e08a1e; --no:#c0392b;
+    --paper:#f6f4ee; --ink:#1c2b22; --card:#ffffff;
+    --primary:#0e6b4f; --primary-dark:#093c2c; --gold:#a8792f;
+    --line:#dcd7c6; --muted:#6b6559; --danger:#9c3b28;
+    --ok:#0e6b4f; --mid:#a8792f; --no:#9c3b28;
+    --font-ui:'IBM Plex Sans Arabic',Tahoma,sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
   }
   *{box-sizing:border-box;}
-  body{font-family:'Tahoma','Segoe UI',sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0;}
-  header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px 16px;text-align:center;}
-  header h1{margin:0;font-size:19px;}
-  header p{margin:6px 0 0;font-size:13px;opacity:.9;}
-  .wrap{max-width:960px;margin:0 auto;padding:16px;}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
-  #loginBox{max-width:420px;margin:40px auto;}
-  #loginBox input{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:20px;letter-spacing:4px;text-align:center;margin-top:8px;}
-  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-size:15px;cursor:pointer;margin-top:14px;width:100%;}
+  html{-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    font-family:var(--font-ui);background:var(--paper);color:var(--ink);margin:0;padding:0;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  header{
+    background:var(--primary-dark);color:#f4f1e6;padding:26px 16px 20px;text-align:center;
+    border-bottom:3px solid var(--gold);
+  }
+  header h1{margin:0;font-size:19px;font-weight:700;}
+  header p{margin:6px 0 0;font-size:12.5px;color:#c9dccf;}
+  header a{color:#e7c98a !important;}
+  .wrap{max-width:960px;margin:0 auto;padding:20px 16px 40px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(9,60,44,.05);}
+  #loginBox{max-width:400px;margin:48px auto;text-align:center;}
+  #loginBox input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:var(--font-mono);font-size:22px;letter-spacing:6px;text-align:center;margin-top:10px;}
+  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-family:var(--font-ui);font-weight:600;font-size:14.5px;cursor:pointer;margin-top:16px;width:100%;transition:background .12s;}
   #loginBox button:hover, .btn:hover{background:var(--primary-dark);}
-  #loginMsg{color:var(--no);font-size:13px;margin-top:8px;}
+  #loginMsg{color:var(--danger);font-size:13px;margin-top:8px;}
   .hidden{display:none;}
-  .role-title{font-size:17px;font-weight:bold;color:var(--primary-dark);}
-  .role-sub{font-size:12px;color:var(--muted);}
-  .item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
-  .item-title{font-weight:bold;margin-bottom:4px;}
-  .item-domain{display:inline-block;font-size:11px;background:#e8f2ef;color:var(--primary-dark);border-radius:12px;padding:2px 9px;margin-bottom:6px;}
-  .item-user{display:inline-block;font-size:11px;background:#f0e9f8;color:#5b3a91;border-radius:12px;padding:2px 9px;margin-bottom:6px;margin-inline-start:4px;}
-  .item-hint{font-size:12px;color:var(--muted);background:#f7f4ea;border-radius:6px;padding:6px 8px;margin-bottom:8px;}
-  .item-hint b{color:var(--accent);}
-  .row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
-  .row label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px;}
+  .role-title{font-size:16.5px;font-weight:700;color:var(--primary-dark);}
+  .role-sub{font-size:12.5px;color:var(--muted);}
+  .item{border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--card);}
+  .item-title{font-weight:600;margin-bottom:6px;font-size:14.5px;}
+  .item-domain{display:inline-block;font-family:var(--font-mono);font-size:11px;background:#e8f2ec;color:var(--primary-dark);border-radius:5px;padding:3px 9px;margin-bottom:6px;}
+  .item-user{display:inline-block;font-size:11px;background:#f3ede1;color:var(--gold);border-radius:5px;padding:3px 9px;margin-bottom:6px;margin-inline-start:4px;}
+  .item-hint{font-size:12.5px;color:var(--muted);background:#f3ede1;border-right:3px solid var(--gold);border-radius:4px;padding:8px 10px;margin-bottom:10px;line-height:1.6;}
+  .item-hint b{color:var(--gold);}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+  .row label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;}
   .field{flex:1;min-width:130px;}
-  select,input[type=text],input[type=number],textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;}
-  .status-لم_يبدأ{border-right:5px solid var(--no);}
-  .status-قيد_التنفيذ{border-right:5px solid var(--mid);}
-  .status-مكتمل{border-right:5px solid var(--ok);}
-  .save-note{font-size:11px;color:var(--muted);margin-top:4px;min-height:14px;}
-  .progress-bar{height:8px;background:#e5eae8;border-radius:4px;overflow:hidden;margin-top:6px;}
-  .progress-fill{height:100%;background:var(--ok);}
-  .dash-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:6px;flex-wrap:wrap;}
-  .dash-role{font-weight:bold;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
-  .logout{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
-  .summary-total{font-size:13px;color:var(--muted);margin-bottom:10px;}
-  .toggle-group{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-  .toggle-btn{flex:1;min-width:100px;padding:8px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;width:auto;margin:0;}
+  select,input[type=text],input[type=number],textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:7px;font-family:var(--font-ui);font-size:13.5px;background:#fff;color:var(--ink);}
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--primary);outline-offset:1px;}
+  .status-لم_يبدأ{border-right:4px solid var(--no);}
+  .status-قيد_التنفيذ{border-right:4px solid var(--mid);}
+  .status-مكتمل{border-right:4px solid var(--ok);}
+  .save-note{font-size:11.5px;color:var(--muted);margin-top:5px;min-height:14px;}
+  .progress-bar{height:7px;background:#eae7db;border-radius:4px;overflow:hidden;margin-top:8px;}
+  .progress-fill{height:100%;background:var(--primary);}
+  .dash-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;gap:6px;flex-wrap:wrap;}
+  .dash-role{font-weight:600;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+  .logout{font-size:12.5px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
+  .summary-total{font-size:13px;color:var(--muted);margin-bottom:12px;}
+  .toggle-group{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .toggle-btn{flex:1;min-width:100px;padding:9px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:7px;font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:13px;width:auto;margin:0;}
   .toggle-btn.active{background:var(--primary);color:#fff;}
-  .updated-flag{display:flex;align-items:center;gap:6px;font-size:13px;background:#f0f7f4;border-radius:6px;padding:8px;margin-bottom:8px;}
+  .updated-flag{display:flex;align-items:center;gap:6px;font-size:13px;background:#eef3ee;border-radius:6px;padding:9px;margin-bottom:10px;}
   .updated-flag input{width:auto;}
-  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-  .qr-box{width:100px;height:100px;background:#fff;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .ev-section{border-top:1px dashed var(--line);margin-top:10px;padding-top:10px;}
+  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .qr-box{width:96px;height:96px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .qr-box img,.qr-box canvas{width:100%;height:100%;}
   .qr-actions{display:flex;flex-direction:column;gap:6px;}
-  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;}
+  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer;}
   .qr-hint{font-size:11px;color:var(--muted);}
-  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .tab-btn{padding:8px 14px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;cursor:pointer;font-size:13px;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab-btn{padding:9px 16px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:7px;font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:13px;}
   .tab-btn.active{background:var(--primary);color:#fff;}
-  .gallery-item{border-right:4px solid var(--info,#5b3a91);padding:8px 12px;margin-bottom:8px;background:#faf9fc;border-radius:6px;font-size:13px;}
+  .gallery-item{border-right:3px solid var(--gold);padding:10px 14px;margin-bottom:8px;background:#faf9f4;border-radius:6px;font-size:13px;}
+  @media (max-width:480px){
+    header h1{font-size:17px;}
+    .role-title{font-size:15px;}
+    .toggle-btn,.tab-btn{font-size:12.5px;padding:8px;}
+  }
 </style>
 </head>
 <body>
 
 <header>
+  <p style="margin:0 0 8px;font-size:12px;color:#c9dccf;">متوسطة الحارث بن هشام</p>
   <h1>نظام متابعة مصادر البيانات والوثائق</h1>
   <p>الاستعداد للتقويم الخارجي 2026</p>
-  <p style="margin-top:10px;"><a href="index.html" style="color:#fff;text-decoration:underline;font-size:13px;">🏠 الرئيسية</a></p>
+  <p style="margin-top:10px;"><a href="index.html" style="text-decoration:underline;font-size:12.5px;">🏠 الرئيسية</a></p>
 </header>
 
 <div class="wrap">
@@ -111,9 +133,15 @@
 
     <div id="galleryTab" class="hidden">
       <div class="card">
-        <div class="role-title">معرض الشواهد حسب المعيار والمؤشر (التقويم الخارجي)</div>
-        <div class="role-sub">اختر المعيار و/أو المؤشر لعرض كل الشواهد المرتبطة به من جميع الأدوار</div>
+        <div class="role-title">معرض الشواهد حسب المجال والمعيار والمؤشر (التقويم الخارجي)</div>
+        <div class="role-sub">القائمة تعرض دائمًا كل المجالات والمعايير والمؤشرات الرسمية، سواء فيها شواهد أو بدون، لتسهيل المتابعة</div>
         <div class="row" style="margin-top:10px;">
+          <div class="field">
+            <label>المجال</label>
+            <select id="filterDomain" onchange="onDomainChange()">
+              <option value="">-- كل المجالات --</option>
+            </select>
+          </div>
           <div class="field">
             <label>المعيار</label>
             <select id="filterStandard" onchange="onStandardChange()">
@@ -127,7 +155,7 @@
             </select>
           </div>
         </div>
-        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للمعيار/المؤشر المحدد</button>
+        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للنطاق المحدد</button>
       </div>
       <div id="galleryList"></div>
     </div>
@@ -225,17 +253,29 @@ async function loadDashboard(){
   });
 }
 
+let evidenceByItem = {};
+
 async function loadItems(){
-  const res = await apiCall({action:'getItems', userName: currentUser, isAdmin: isAdmin});
-  if(!res.success) return;
+  const [itemsRes, evRes] = await Promise.all([
+    apiCall({action:'getItems', userName: currentUser, isAdmin: isAdmin}),
+    apiCall({action:'getAllReadinessEvidence'})
+  ]);
+  if(!itemsRes.success) return;
+  evidenceByItem = {};
+  if(evRes.success){
+    evRes.items.forEach(ev=>{
+      if(!evidenceByItem[ev.itemId]) evidenceByItem[ev.itemId] = [];
+      evidenceByItem[ev.itemId].push(ev);
+    });
+  }
   const list = document.getElementById('itemsList');
   list.innerHTML = '';
-  const done = res.items.filter(i=>i.status==='مكتمل').length;
-  const updated = res.items.filter(i=>i.updated).length;
+  const done = itemsRes.items.filter(i=>i.status==='مكتمل').length;
+  const updated = itemsRes.items.filter(i=>i.updated).length;
   document.getElementById('summaryTotal').textContent =
-    `عدد البنود: ${res.items.length} — مكتمل: ${done} — محدّث: ${updated}`;
+    `عدد البنود: ${itemsRes.items.length} — مكتمل: ${done} — محدّث: ${updated}`;
 
-  res.items.forEach(it=>{
+  itemsRes.items.forEach(it=>{
     const div = document.createElement('div');
     const statusClass = 'status-' + it.status.replace(/ /g,'_');
     div.className = 'item ' + statusClass;
@@ -268,32 +308,101 @@ async function loadItems(){
           <textarea class="f-notes" data-id="${it.id}" rows="2">${it.notes||''}</textarea>
         </div>
       </div>
-      <div class="row">
-        <div class="field">
-          <label>رابط الشاهد (رابط جاهز — Drive أو أي مكان)</label>
-          <input type="text" class="f-link" data-id="${it.id}" placeholder="https://..." value="${it.evidenceLink||''}">
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>أو ارفع صورة/ملف مباشرة (يُحفظ تلقائيًا ويُنشئ رابط الشاهد)</label>
-          <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
-        </div>
-      </div>
-      <div class="qr-block" id="qr-block-${it.id}"></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${it.progress||0}%"></div></div>
       <div class="save-note" id="note-${it.id}"></div>
+
+      <div class="ev-section">
+        <label style="font-size:12px;color:var(--muted);display:block;margin:8px 0 4px;">الشواهد (يمكن إضافة أكثر من شاهد)</label>
+        <div id="ev-list-${it.id}"></div>
+        <div class="row">
+          <div class="field">
+            <input type="text" class="f-newlink" data-id="${it.id}" placeholder="https://... ثم اضغط إضافة">
+          </div>
+          <button type="button" class="btn" style="width:auto;margin:0;padding:8px 14px;" onclick="addLinkEvidence('${it.id}')">إضافة رابط</button>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label style="font-size:11px;">أو ارفع صورة/ملف مباشرة</label>
+            <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+          </div>
+        </div>
+      </div>
     `;
     list.appendChild(div);
 
-    div.querySelectorAll('select, input:not(.f-file), textarea').forEach(el=>{
+    div.querySelectorAll('select, input:not(.f-file):not(.f-newlink), textarea').forEach(el=>{
       el.addEventListener('change', ()=>saveItem(it.id, div));
     });
 
     div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
 
-    renderQrBlock(it.id, it.evidenceLink);
+    renderEvidenceList(it.id);
   });
+}
+
+function renderEvidenceList(itemId){
+  const box = document.getElementById('ev-list-'+itemId);
+  if(!box) return;
+  box.innerHTML = '';
+  const list = evidenceByItem[itemId] || [];
+  if(list.length===0){
+    box.innerHTML = '<div class="save-note">لا توجد شواهد مضافة بعد</div>';
+    return;
+  }
+  list.forEach(ev=>{
+    const row = document.createElement('div');
+    row.className = 'qr-block';
+    const a = document.createElement('a');
+    a.href = ev.evidenceLink; a.target = '_blank'; a.rel = 'noopener';
+    const qrDiv = document.createElement('div');
+    qrDiv.className = 'qr-box';
+    qrDiv.id = 'qr-img-'+ev.id;
+    a.appendChild(qrDiv);
+
+    const actions = document.createElement('div');
+    actions.className = 'qr-actions';
+    const canDelete = ev.userName === currentUser;
+    actions.innerHTML = `
+      <span class="qr-hint">${ev.userName}</span>
+      <button type="button" onclick="downloadQr('${ev.id}')">تنزيل QR</button>
+      ${canDelete ? `<button type="button" style="background:#c0392b;" onclick="deleteEvidenceItem('${ev.id}','${itemId}')">حذف</button>` : ''}
+    `;
+    row.appendChild(a);
+    row.appendChild(actions);
+    box.appendChild(row);
+    new QRCode(qrDiv, { text: ev.evidenceLink, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
+  });
+}
+
+async function addLinkEvidence(itemId){
+  const input = document.querySelector(`.f-newlink[data-id="${itemId}"]`);
+  const link = input.value.trim();
+  if(!link) return;
+  const noteEl = document.getElementById('note-'+itemId);
+  noteEl.textContent = 'جارِ الإضافة...';
+  const res = await apiCall({action:'addReadinessEvidence', itemId, userName: currentUser, evidenceLink: link});
+  if(res.success){
+    if(!evidenceByItem[itemId]) evidenceByItem[itemId] = [];
+    evidenceByItem[itemId].push({ id: res.id, itemId, userName: currentUser, evidenceLink: link });
+    renderEvidenceList(itemId);
+    input.value = '';
+    noteEl.textContent = 'تمت الإضافة ✓';
+  } else {
+    noteEl.textContent = res.message || 'فشلت الإضافة';
+  }
+}
+
+async function deleteEvidenceItem(evidenceId, itemId){
+  if(!confirm('حذف هذا الشاهد؟')) return;
+  const noteEl = document.getElementById('note-'+itemId);
+  const res = await apiCall({action:'deleteReadinessEvidence', evidenceId, userName: currentUser});
+  if(res.success){
+    evidenceByItem[itemId] = (evidenceByItem[itemId]||[]).filter(e=>e.id!==evidenceId);
+    renderEvidenceList(itemId);
+    noteEl.textContent = 'تم الحذف';
+  } else {
+    noteEl.textContent = res.message || 'تعذّر الحذف';
+  }
 }
 
 async function uploadEvidenceFile(id, div, file){
@@ -312,39 +421,20 @@ async function uploadEvidenceFile(id, div, file){
       action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data
     });
     if(res.success){
-      div.querySelector('.f-link').value = res.url;
-      noteEl.textContent = 'تم رفع الملف، جارِ الحفظ...';
-      saveItem(id, div);
+      const addRes = await apiCall({action:'addReadinessEvidence', itemId:id, userName: currentUser, evidenceLink: res.url});
+      if(addRes.success){
+        if(!evidenceByItem[id]) evidenceByItem[id] = [];
+        evidenceByItem[id].push({ id: addRes.id, itemId:id, userName: currentUser, evidenceLink: res.url });
+        renderEvidenceList(id);
+        noteEl.textContent = 'تم رفع الملف وإضافته ✓';
+      } else {
+        noteEl.textContent = addRes.message || 'فشل حفظ الشاهد';
+      }
     } else {
       noteEl.textContent = res.message || 'فشل رفع الملف';
     }
   };
   reader.readAsDataURL(file);
-}
-
-function renderQrBlock(id, link){
-  const box = document.getElementById('qr-block-'+id);
-  if(!box) return;
-  box.innerHTML = '';
-  if(!link){ return; }
-  const a = document.createElement('a');
-  a.href = link; a.target = '_blank'; a.rel = 'noopener';
-  const qrDiv = document.createElement('div');
-  qrDiv.className = 'qr-box';
-  qrDiv.id = 'qr-img-'+id;
-  a.appendChild(qrDiv);
-
-  const actions = document.createElement('div');
-  actions.className = 'qr-actions';
-  actions.innerHTML = `
-    <span class="qr-hint">اضغط الرمز لفتح الشاهد</span>
-    <button type="button" onclick="downloadQr('${id}')">تنزيل الرمز كصورة</button>
-  `;
-
-  box.appendChild(a);
-  box.appendChild(actions);
-
-  new QRCode(qrDiv, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
 }
 
 function downloadQr(id){
@@ -370,107 +460,250 @@ function saveItem(id, div){
     const updated = div.querySelector('.f-updated').checked;
     const progress = div.querySelector('.f-progress').value;
     const notes = div.querySelector('.f-notes').value;
-    const evidenceLink = div.querySelector('.f-link').value.trim();
     document.getElementById('note-'+id).textContent = 'جارِ الحفظ...';
-    const res = await apiCall({action:'updateItem', id, status, updated, progress, notes, evidenceLink});
+    const res = await apiCall({action:'updateItem', id, status, updated, progress, notes});
     document.getElementById('note-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
     div.querySelector('.progress-fill').style.width = (progress||0)+'%';
     div.className = div.className.replace(/status-\S+/,'') + ' status-' + status.replace(/ /g,'_');
-    renderQrBlock(id, evidenceLink);
     if(isAdmin) loadDashboard();
   }, 500);
 }
 
-// ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
+// ==== معرض الشواهد: يعرض الإطار الكامل الثابت (مجال ← معيار ← مؤشر) دائمًا ====
+let fullFramework = {};
 let galleryItems = [];
 
+let galleryEvidenceByItem = {};
+
 async function loadGallery(){
-  const res = await apiCall({action:'getReadinessGallery'});
-  if(!res.success) return;
-  galleryItems = res.items;
+  const [fwRes, evRes, allEvRes] = await Promise.all([
+    apiCall({action:'getFullFramework'}),
+    apiCall({action:'getReadinessGallery'}),
+    apiCall({action:'getAllReadinessEvidence'})
+  ]);
+  if(fwRes.success) fullFramework = fwRes.framework;
+  if(evRes.success) galleryItems = evRes.items;
+  galleryEvidenceByItem = {};
+  if(allEvRes.success){
+    allEvRes.items.forEach(ev=>{
+      if(!galleryEvidenceByItem[ev.itemId]) galleryEvidenceByItem[ev.itemId] = [];
+      galleryEvidenceByItem[ev.itemId].push(ev);
+    });
+  }
+  populateDomainFilter();
   populateStandardFilter();
   populateIndicatorFilter();
   renderFilteredGallery();
 }
 
+function populateDomainFilter(){
+  const sel = document.getElementById('filterDomain');
+  const domains = Object.keys(fullFramework);
+  sel.innerHTML = '<option value="">-- كل المجالات --</option>' +
+    domains.map(d=>`<option value="${d}">${d}</option>`).join('');
+}
+
 function populateStandardFilter(){
+  const domain = document.getElementById('filterDomain').value;
   const sel = document.getElementById('filterStandard');
-  const standards = [...new Set(galleryItems.map(i=>i.standard))].sort();
+  const selectedBefore = sel.value;
+  let standards = [];
+  if(domain){
+    standards = Object.keys(fullFramework[domain] || {});
+  } else {
+    Object.values(fullFramework).forEach(stds => standards.push(...Object.keys(stds)));
+  }
   sel.innerHTML = '<option value="">-- كل المعايير --</option>' +
     standards.map(s=>`<option value="${s}">${s}</option>`).join('');
+  if(standards.includes(selectedBefore)) sel.value = selectedBefore;
 }
 
 function populateIndicatorFilter(){
+  const domain = document.getElementById('filterDomain').value;
   const standard = document.getElementById('filterStandard').value;
   const indSel = document.getElementById('filterIndicator');
   const selectedBefore = indSel.value;
-  const filtered = standard ? galleryItems.filter(i=>i.standard===standard) : galleryItems;
-  const indicators = [...new Map(filtered.filter(i=>i.code).map(i=>[i.code, i.indicatorText])).entries()]
-    .sort((a,b)=>a[0].localeCompare(b[0]));
+  let indicators = [];
+  const domainsToScan = domain ? [domain] : Object.keys(fullFramework);
+  domainsToScan.forEach(d=>{
+    const stds = fullFramework[d] || {};
+    const stdsToScan = standard ? (stds[standard] ? [standard] : []) : Object.keys(stds);
+    stdsToScan.forEach(s=>{ indicators.push(...(stds[s]||[])); });
+  });
   indSel.innerHTML = '<option value="">-- كل المؤشرات --</option>' +
     indicators.map(([code,text])=>`<option value="${code}">(${code}) ${text}</option>`).join('');
   if(indicators.some(([code])=>code===selectedBefore)) indSel.value = selectedBefore;
 }
 
+function onDomainChange(){
+  populateStandardFilter();
+  populateIndicatorFilter();
+  renderFilteredGallery();
+}
 function onStandardChange(){
   populateIndicatorFilter();
   renderFilteredGallery();
 }
 
-function currentFilteredGalleryItems(){
-  const standard = document.getElementById('filterStandard').value;
-  const indicator = document.getElementById('filterIndicator').value;
-  return galleryItems.filter(i=>
-    (!standard || i.standard===standard) && (!indicator || i.code===indicator)
-  );
+/** يبني شجرة (مجال←معيار←مؤشر) مُصفّاة حسب الاختيار الحالي، مع الشواهد المرتبطة إن وجدت */
+function buildFilteredTree(){
+  const fDomain = document.getElementById('filterDomain').value;
+  const fStandard = document.getElementById('filterStandard').value;
+  const fIndicator = document.getElementById('filterIndicator').value;
+  const tree = [];
+  Object.keys(fullFramework).forEach(domain=>{
+    if(fDomain && domain!==fDomain) return;
+    const standards = fullFramework[domain];
+    Object.keys(standards).forEach(standard=>{
+      if(fStandard && standard!==fStandard) return;
+      const indicators = standards[standard].filter(([code])=> !fIndicator || code===fIndicator);
+      if(indicators.length===0) return;
+      const indicatorRows = indicators.map(([code,text])=>({
+        code, text,
+        items: galleryItems.filter(it=>it.code===code)
+      }));
+      // بنود إجرائية داخلية (بلا كود) تتبع نفس المعيار
+      const looseItems = (!fIndicator) ? galleryItems.filter(it=>it.domain===domain && it.standard===standard && !it.code) : [];
+      tree.push({ domain, standard, indicatorRows, looseItems });
+    });
+  });
+  return tree;
 }
 
 function renderFilteredGallery(){
-  const items = currentFilteredGalleryItems();
+  const tree = buildFilteredTree();
   const list = document.getElementById('galleryList');
   list.innerHTML = '';
-  if(items.length===0){ list.innerHTML = '<div class="save-note">لا توجد شواهد مطابقة لهذا الاختيار</div>'; return; }
-  const byGroup = {};
-  items.forEach(it=>{
-    const key = it.standard + '|' + (it.code||'—');
-    if(!byGroup[key]) byGroup[key] = { standard: it.standard, code: it.code, indicatorText: it.indicatorText, items: [] };
-    byGroup[key].items.push(it);
-  });
-  Object.values(byGroup).forEach(group=>{
-    const h = document.createElement('div');
-    h.className = 'role-title';
-    h.style.marginTop = '14px';
-    h.textContent = group.code ? `${group.standard} — (${group.code}) ${group.indicatorText}` : group.standard;
-    list.appendChild(h);
-    group.items.forEach(it=>{
-      const div = document.createElement('div');
-      div.className = 'gallery-item';
-      div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
-        ${it.status ? ' — الحالة: '+it.status : ''}
-        <div class="qr-block" id="qr-block-g-${it.id}"></div>`;
-      list.appendChild(div);
-      renderQrBlock('g-'+it.id, it.evidenceLink);
+  if(tree.length===0){ list.innerHTML = '<div class="save-note">لا يوجد ما يطابق هذا الاختيار</div>'; return; }
+
+  tree.forEach(group=>{
+    const domainHeader = document.createElement('div');
+    domainHeader.className = 'role-title';
+    domainHeader.style.marginTop = '18px';
+    domainHeader.style.color = 'var(--accent)';
+    domainHeader.textContent = `${group.domain} — ${group.standard}`;
+    list.appendChild(domainHeader);
+
+    group.indicatorRows.forEach(row=>{
+      const h = document.createElement('div');
+      h.className = 'item-domain';
+      h.style.display = 'block';
+      h.style.marginTop = '8px';
+      h.textContent = `(${row.code}) ${row.text}`;
+      list.appendChild(h);
+
+      if(row.items.length===0){
+        const empty = document.createElement('div');
+        empty.className = 'gallery-item';
+        empty.style.borderRightColor = '#c0392b';
+        empty.textContent = 'لا توجد بنود أو شواهد مرتبطة بهذا المؤشر بعد';
+        list.appendChild(empty);
+        return;
+      }
+      row.items.forEach(it=>{
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        const evList = galleryEvidenceByItem[it.id] || [];
+        if(evList.length===0) div.style.borderRightColor = '#c0392b';
+        div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
+          ${it.status ? ' — الحالة: '+it.status : ''}`;
+        list.appendChild(div);
+        if(evList.length===0){
+          const empty = document.createElement('div');
+          empty.className = 'save-note';
+          empty.style.marginBottom = '8px';
+          empty.textContent = 'لا يوجد شاهد مرفوع بعد';
+          list.appendChild(empty);
+        } else {
+          evList.forEach(ev=>{
+            renderReadOnlyQr(list, 'g-'+ev.id, ev.evidenceLink, ev.userName);
+          });
+        }
+      });
     });
+
+    if(group.looseItems.length){
+      const lh = document.createElement('div');
+      lh.className = 'item-domain';
+      lh.style.display = 'block';
+      lh.style.marginTop = '8px';
+      lh.textContent = 'بنود أخرى بدون مؤشر رسمي مباشر';
+      list.appendChild(lh);
+      group.looseItems.forEach(it=>{
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        const evList = galleryEvidenceByItem[it.id] || [];
+        if(evList.length===0) div.style.borderRightColor = '#c0392b';
+        div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
+          ${it.status ? ' — الحالة: '+it.status : ''}`;
+        list.appendChild(div);
+        if(evList.length===0){
+          const empty = document.createElement('div');
+          empty.className = 'save-note';
+          empty.style.marginBottom = '8px';
+          empty.textContent = 'لا يوجد شاهد مرفوع بعد';
+          list.appendChild(empty);
+        } else {
+          evList.forEach(ev=>{
+            renderReadOnlyQr(list, 'g-'+ev.id, ev.evidenceLink, ev.userName);
+          });
+        }
+      });
+    }
   });
 }
 
-function exportFormattedFile(){
-  const items = currentFilteredGalleryItems();
-  if(items.length===0){ alert('لا توجد شواهد لتصديرها ضمن هذا الاختيار'); return; }
-  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
-  const indicatorSel = document.getElementById('filterIndicator');
-  const indicatorText = indicatorSel.value ?
-    indicatorSel.options[indicatorSel.selectedIndex].textContent : 'كل المؤشرات';
+function renderReadOnlyQr(container, id, link, ownerLabel){
+  const row = document.createElement('div');
+  row.className = 'qr-block';
+  const a = document.createElement('a');
+  a.href = link; a.target = '_blank'; a.rel = 'noopener';
+  const qrDiv = document.createElement('div');
+  qrDiv.className = 'qr-box';
+  qrDiv.id = 'qr-img-'+id;
+  a.appendChild(qrDiv);
+  const label = document.createElement('span');
+  label.className = 'qr-hint';
+  label.textContent = ownerLabel || '';
+  row.appendChild(a);
+  row.appendChild(label);
+  container.appendChild(row);
+  new QRCode(qrDiv, { text: link, width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
+}
 
-  const rows = items.map((it,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${it.userName}</td>
-      <td>${it.role}</td>
-      <td>${it.item}</td>
-      <td>${it.status||'—'}</td>
-      <td><a href="${it.evidenceLink}">${it.evidenceLink}</a></td>
-    </tr>`).join('');
+function exportFormattedFile(){
+  const tree = buildFilteredTree();
+  if(tree.length===0){ alert('لا يوجد ما يطابق هذا الاختيار للتصدير'); return; }
+  const domain = document.getElementById('filterDomain').value || 'كل المجالات';
+  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
+
+  let rowsHtml = '';
+  let rowNum = 0;
+  tree.forEach(group=>{
+    group.indicatorRows.forEach(row=>{
+      if(row.items.length===0){
+        rowNum++;
+        rowsHtml += `<tr><td>${rowNum}</td><td>${group.domain}</td><td>${group.standard}</td>
+          <td>(${row.code}) ${row.text}</td><td>—</td><td>—</td><td>لا يوجد</td></tr>`;
+        return;
+      }
+      row.items.forEach(it=>{
+        const evList = galleryEvidenceByItem[it.id] || [];
+        if(evList.length===0){
+          rowNum++;
+          rowsHtml += `<tr><td>${rowNum}</td><td>${group.domain}</td><td>${group.standard}</td>
+            <td>(${row.code}) ${row.text}</td><td>${it.userName}</td><td>${it.item}</td><td>لا يوجد</td></tr>`;
+        } else {
+          evList.forEach(ev=>{
+            rowNum++;
+            rowsHtml += `<tr><td>${rowNum}</td><td>${group.domain}</td><td>${group.standard}</td>
+              <td>(${row.code}) ${row.text}</td><td>${it.userName}</td><td>${it.item}</td>
+              <td><a href="${ev.evidenceLink}">فتح الشاهد</a></td></tr>`;
+          });
+        }
+      });
+    });
+  });
 
   const html = `
     <html dir="rtl" lang="ar"><head><meta charset="UTF-8">
@@ -480,23 +713,22 @@ function exportFormattedFile(){
       h1{font-size:18px;color:#154d40;border-bottom:2px solid #1f6f5c;padding-bottom:8px;}
       .meta{font-size:13px;color:#555;margin-bottom:16px;}
       .meta b{color:#154d40;}
-      table{width:100%;border-collapse:collapse;font-size:12px;}
-      th,td{border:1px solid #ccc;padding:6px 8px;text-align:right;}
+      table{width:100%;border-collapse:collapse;font-size:11px;}
+      th,td{border:1px solid #ccc;padding:5px 7px;text-align:right;}
       th{background:#1f6f5c;color:#fff;}
       tr:nth-child(even){background:#f7f9f8;}
       .footer{margin-top:20px;font-size:11px;color:#888;}
     </style></head>
     <body>
-      <h1>تقرير الشواهد المرتبطة بمعيار التقويم الخارجي</h1>
+      <h1>تقرير الشواهد — مجالات ومعايير ومؤشرات التقويم الخارجي</h1>
       <div class="meta">
+        <b>المجال:</b> ${domain}<br>
         <b>المعيار:</b> ${standard}<br>
-        <b>المؤشر:</b> ${indicatorText}<br>
-        <b>عدد الشواهد:</b> ${items.length}<br>
         <b>تاريخ التصدير:</b> ${new Date().toLocaleDateString('ar-SA')}
       </div>
       <table>
-        <thead><tr><th>#</th><th>الموظف</th><th>الدور</th><th>البند</th><th>الحالة</th><th>رابط الشاهد</th></tr></thead>
-        <tbody>${rows}</tbody>
+        <thead><tr><th>#</th><th>المجال</th><th>المعيار</th><th>المؤشر</th><th>الموظف</th><th>البند</th><th>الشاهد</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
       </table>
       <div class="footer">تم إنشاء هذا التقرير آليًا من نظام متابعة مصادر البيانات والوثائق.</div>
       <script>window.onload = () => window.print();<\/script>
