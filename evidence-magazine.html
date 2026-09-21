@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مجلة الشواهد - التقويم الخارجي 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f4ee; --ink:#1c2b22; --card:#ffffff;
+    --primary:#0e6b4f; --primary-dark:#093c2c; --gold:#a8792f;
+    --line:#dcd7c6; --muted:#6b6559;
+    --font-ui:'IBM Plex Sans Arabic',Tahoma,sans-serif;
+    --font-mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:var(--font-ui);background:var(--paper);color:var(--ink);margin:0;padding:0;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  header{background:var(--primary-dark);color:#f4f1e6;padding:26px 16px 20px;text-align:center;border-bottom:3px solid var(--gold);}
+  header p.kicker{margin:0 0 8px;font-size:12px;color:#c9dccf;}
+  header h1{margin:0;font-size:20px;font-weight:700;}
+  header p.sub{margin:6px 0 0;font-size:12.5px;color:#c9dccf;}
+  header a{color:#e7c98a !important;}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:20px 16px 60px;}
+
+  #loginBox{max-width:400px;margin:60px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px;}
+  #loginBox input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:var(--font-mono);font-size:22px;letter-spacing:6px;text-align:center;margin-top:10px;}
+  #loginBox button{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-family:var(--font-ui);font-weight:600;font-size:14.5px;cursor:pointer;margin-top:16px;width:100%;}
+  #loginMsg{color:#9c3b28;font-size:13px;margin-top:8px;}
+  .hidden{display:none;}
+
+  .toolbar{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line);
+  }
+  .toolbar .stats{font-size:13px;color:var(--muted);}
+  .toolbar .stats b{color:var(--primary-dark);font-family:var(--font-mono);}
+  .toolbar button{
+    background:var(--gold);color:#fff;border:none;padding:10px 18px;border-radius:8px;
+    font-family:var(--font-ui);font-weight:600;font-size:13.5px;cursor:pointer;
+  }
+  .logout{font-size:12.5px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;}
+
+  .domain-block{margin-bottom:36px;}
+  .domain-title{
+    font-size:19px;font-weight:700;color:var(--primary-dark);margin:0 0 4px;
+    padding-bottom:10px;border-bottom:2px solid var(--gold);
+  }
+  .standard-block{margin-top:20px;}
+  .standard-title{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 10px;}
+
+  .indicator-group{margin-bottom:16px;}
+  .indicator-head{
+    display:flex;align-items:baseline;gap:8px;font-size:13px;color:var(--muted);
+    margin-bottom:8px;padding:6px 0;
+  }
+  .indicator-code{font-family:var(--font-mono);color:var(--gold);font-weight:600;white-space:nowrap;}
+
+  .ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .ev-card{
+    background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+    text-decoration:none;color:var(--ink);display:flex;flex-direction:column;
+  }
+  .ev-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee;display:block;}
+  .ev-icon{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:34px;background:#f0ede2;}
+  .ev-meta{padding:8px 10px;}
+  .ev-meta .role{font-size:11px;color:var(--muted);}
+  .ev-meta .name{font-size:12px;font-weight:600;color:var(--primary-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .empty-note{text-align:center;color:var(--muted);font-size:14px;padding:60px 20px;}
+
+  @media (max-width:480px){
+    header h1{font-size:17px;}
+    .domain-title{font-size:17px;}
+    .ev-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  }
+
+  @media print{
+    header{background:#fff !important;color:var(--ink) !important;border-bottom:2px solid var(--gold);}
+    header a,.toolbar,.logout{display:none !important;}
+    body{background:#fff;}
+    .domain-block{break-inside:avoid-page;}
+    .indicator-group{break-inside:avoid;}
+    .ev-card{border:1px solid #ccc;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">متوسطة الحارث بن هشام</p>
+  <h1>مجلة الشواهد</h1>
+  <p class="sub">عرض شامل للشواهد الموثّقة — جاهزة لزيارة التقويم الخارجي</p>
+  <p style="margin-top:10px;"><a href="index.html" style="text-decoration:underline;font-size:12.5px;">🏠 الرئيسية</a></p>
+</header>
+
+<div class="wrap">
+
+  <div id="loginBox">
+    <div style="font-weight:700;font-size:16px;margin-bottom:6px;">تسجيل الدخول</div>
+    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري (PIN)</label>
+    <input type="text" inputmode="numeric" id="codeInput" placeholder="••••" maxlength="8">
+    <button onclick="doLogin()">دخول</button>
+    <div id="loginMsg"></div>
+  </div>
+
+  <div id="appBox" class="hidden">
+    <div class="toolbar">
+      <div class="stats" id="statsLine"></div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button onclick="window.print()">🖨️ طباعة / تصدير PDF</button>
+        <button class="logout" onclick="logout()">تسجيل خروج</button>
+      </div>
+    </div>
+    <div id="magazineContent"></div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbyJzPNLJVyGJwsPIvwVwa43CgxoxrTt5ZFftr_4MLD0ikmNqlxL4HnGfqOs4EkE_zuqNw/exec";
+
+async function apiCall(payload){
+  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+async function doLogin(){
+  const code = document.getElementById('codeInput').value.trim();
+  if(!code) return;
+  document.getElementById('loginMsg').textContent = 'جارِ التحقق...';
+  const res = await apiCall({action:'login', code});
+  if(res.success){
+    localStorage.setItem('mag_code', code);
+    showApp();
+  } else {
+    document.getElementById('loginMsg').textContent = res.message || 'خطأ في تسجيل الدخول';
+  }
+}
+function logout(){ localStorage.removeItem('mag_code'); location.reload(); }
+
+async function showApp(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('appBox').classList.remove('hidden');
+  await loadMagazine();
+}
+
+// يستخرج رابط معاينة مباشر من رابط Drive (لو كان الشاهد صورة)
+function driveThumb(link){
+  const m = String(link).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(link).match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(!m) return null;
+  return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w500`;
+}
+function iconFor(mimeType){
+  if(!mimeType) return '🔗';
+  if(mimeType.includes('pdf')) return '📄';
+  if(mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
+  if(mimeType.includes('word') || mimeType.includes('document')) return '📝';
+  if(mimeType.includes('presentation')) return '📽️';
+  return '📎';
+}
+
+async function loadMagazine(){
+  const [fwRes, itemsRes, evRes] = await Promise.all([
+    apiCall({action:'getFullFramework'}),
+    apiCall({action:'getReadinessGallery'}),
+    apiCall({action:'getAllReadinessEvidence'})
+  ]);
+  if(!fwRes.success || !itemsRes.success || !evRes.success) return;
+
+  const framework = fwRes.framework;
+  const items = itemsRes.items;
+  const evByItem = {};
+  evRes.items.forEach(ev=>{
+    if(!evByItem[ev.itemId]) evByItem[ev.itemId] = [];
+    evByItem[ev.itemId].push(ev);
+  });
+
+  let totalEvidence = evRes.items.length;
+  let coveredIndicators = 0, totalIndicators = 0;
+
+  const content = document.getElementById('magazineContent');
+  content.innerHTML = '';
+  let anyRendered = false;
+
+  Object.keys(framework).forEach(domain=>{
+    const standards = framework[domain];
+    const domainBlock = document.createElement('div');
+    domainBlock.className = 'domain-block';
+    let domainHtml = `<div class="domain-title">${domain}</div>`;
+    let domainHasContent = false;
+
+    Object.keys(standards).forEach(standard=>{
+      let standardHtml = '';
+      let standardHasContent = false;
+
+      standards[standard].forEach(([code, text])=>{
+        totalIndicators++;
+        // كل البنود المرتبطة بهذا المؤشر عبر كل الأدوار
+        const relatedItems = items.filter(it=>it.code===code);
+        let evCards = '';
+        let count = 0;
+        relatedItems.forEach(it=>{
+          (evByItem[it.id]||[]).forEach(ev=>{
+            count++;
+            const thumb = ev.mimeType && ev.mimeType.startsWith('image/') ? driveThumb(ev.evidenceLink) : null;
+            evCards += `<a class="ev-card" href="${ev.evidenceLink}" target="_blank" rel="noopener">
+              ${thumb ? `<img class="ev-thumb" src="${thumb}" loading="lazy" alt="">` : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`}
+              <div class="ev-meta">
+                <div class="name">${it.item}</div>
+                <div class="role">${ev.userName}</div>
+              </div>
+            </a>`;
+          });
+        });
+
+        if(count > 0){
+          coveredIndicators++;
+          standardHasContent = true;
+          domainHasContent = true;
+          anyRendered = true;
+          standardHtml += `
+            <div class="indicator-group">
+              <div class="indicator-head"><span class="indicator-code">(${code})</span><span>${text}</span></div>
+              <div class="ev-grid">${evCards}</div>
+            </div>`;
+        }
+      });
+
+      if(standardHasContent){
+        domainHtml += `<div class="standard-block"><div class="standard-title">${standard}</div>${standardHtml}</div>`;
+      }
+    });
+
+    if(domainHasContent){
+      domainBlock.innerHTML = domainHtml;
+      content.appendChild(domainBlock);
+    }
+  });
+
+  document.getElementById('statsLine').innerHTML =
+    `<b>${totalEvidence}</b> شاهدًا موثّقًا — يغطون <b>${coveredIndicators}</b> من أصل <b>${totalIndicators}</b> مؤشرًا رسميًا`;
+
+  if(!anyRendered){
+    content.innerHTML = '<div class="empty-note">لا توجد شواهد موثّقة بعد. أضف شواهد من نظام متابعة الشواهد وستظهر هنا تلقائيًا.</div>';
+  }
+}
+
+window.addEventListener('load', async ()=>{
+  const saved = localStorage.getItem('mag_code');
+  if(saved){
+    document.getElementById('codeInput').value = saved;
+    const res = await apiCall({action:'login', code: saved});
+    if(res.success) showApp();
+  }
+});
+</script>
+
+</body>
+</html>
