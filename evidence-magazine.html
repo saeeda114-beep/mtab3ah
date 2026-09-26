@@ -65,13 +65,18 @@
   .ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
   .ev-card{
     background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;
-    text-decoration:none;color:var(--ink);display:flex;flex-direction:column;
+    color:var(--ink);display:flex;flex-direction:column;
   }
+  .ev-card.pdf-card{grid-column:span 2;}
+  @media (max-width:480px){ .ev-card.pdf-card{grid-column:1 / -1;} }
   .ev-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee;display:block;}
   .ev-icon{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:34px;background:#f0ede2;}
+  .ev-pdf-frame{width:100%;height:340px;border:none;display:block;background:#eee;}
+  .ev-icon.print-only{display:none;}
   .ev-meta{padding:8px 10px;}
   .ev-meta .role{font-size:11px;color:var(--muted);}
   .ev-meta .name{font-size:12px;font-weight:600;color:var(--primary-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ev-meta .open-link{font-size:11px;color:var(--primary);text-decoration:underline;}
 
   .empty-note{text-align:center;color:var(--muted);font-size:14px;padding:60px 20px;}
 
@@ -88,6 +93,8 @@
     .domain-block{break-inside:avoid-page;}
     .indicator-group{break-inside:avoid;}
     .ev-card{border:1px solid #ccc;}
+    .ev-pdf-frame{display:none;}
+    .ev-icon.print-only{display:flex;}
   }
 </style>
 </head>
@@ -152,11 +159,18 @@ async function showApp(){
   await loadMagazine();
 }
 
-// يستخرج رابط معاينة مباشر من رابط Drive (لو كان الشاهد صورة)
-function driveThumb(link){
+// يستخرج معرّف ملف Drive من الرابط
+function driveFileId(link){
   const m = String(link).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(link).match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if(!m) return null;
-  return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w500`;
+  return m ? m[1] : null;
+}
+function driveThumb(link){
+  const id = driveFileId(link);
+  return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w500` : null;
+}
+function drivePreview(link){
+  const id = driveFileId(link);
+  return id ? `https://drive.google.com/file/d/${id}/preview` : null;
 }
 function iconFor(mimeType){
   if(!mimeType) return '🔗';
@@ -166,21 +180,44 @@ function iconFor(mimeType){
   if(mimeType.includes('presentation')) return '📽️';
   return '📎';
 }
+function buildEvCard(ev){
+  const isImage = ev.mimeType && ev.mimeType.startsWith('image/');
+  const isPdf = ev.mimeType && ev.mimeType.includes('pdf');
+  let media;
+  if(isImage){
+    const thumb = driveThumb(ev.evidenceLink);
+    media = thumb ? `<img class="ev-thumb" src="${thumb}" loading="lazy" alt="">` : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
+  } else if(isPdf){
+    const prev = drivePreview(ev.evidenceLink);
+    media = prev
+      ? `<iframe class="ev-pdf-frame" src="${prev}" loading="lazy"></iframe><div class="ev-icon print-only">📄</div>`
+      : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
+  } else {
+    media = `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
+  }
+  return `<div class="ev-card${isPdf ? ' pdf-card' : ''}">
+    ${media}
+    <div class="ev-meta">
+      <div class="name">${ev.itemLabel || ev.roleOrModel || ''}</div>
+      <div class="role">${ev.userName}${ev.source ? ' — '+ev.source : ''}</div>
+      <a class="open-link" href="${ev.evidenceLink}" target="_blank" rel="noopener">فتح ↗</a>
+    </div>
+  </div>`;
+}
 
 async function loadMagazine(){
-  const [fwRes, itemsRes, evRes] = await Promise.all([
+  const [fwRes, evRes] = await Promise.all([
     apiCall({action:'getFullFramework'}),
-    apiCall({action:'getReadinessGallery'}),
-    apiCall({action:'getAllReadinessEvidence'})
+    apiCall({action:'getAllReadinessEvidence'}) // يرجّع الآن كل الشواهد الموحّدة من النظامين معًا
   ]);
-  if(!fwRes.success || !itemsRes.success || !evRes.success) return;
+  if(!fwRes.success || !evRes.success) return;
 
   const framework = fwRes.framework;
-  const items = itemsRes.items;
-  const evByItem = {};
+  const evByCode = {};
   evRes.items.forEach(ev=>{
-    if(!evByItem[ev.itemId]) evByItem[ev.itemId] = [];
-    evByItem[ev.itemId].push(ev);
+    if(!ev.code) return; // نتجاهل الشواهد المرتبطة ببند إجرائي بدون مؤشر رسمي (لا تُعرض بالمجلة)
+    if(!evByCode[ev.code]) evByCode[ev.code] = [];
+    evByCode[ev.code].push(ev);
   });
 
   let totalEvidence = evRes.items.length;
@@ -203,25 +240,11 @@ async function loadMagazine(){
 
       standards[standard].forEach(([code, text])=>{
         totalIndicators++;
-        // كل البنود المرتبطة بهذا المؤشر عبر كل الأدوار
-        const relatedItems = items.filter(it=>it.code===code);
+        const evList = evByCode[code] || [];
         let evCards = '';
-        let count = 0;
-        relatedItems.forEach(it=>{
-          (evByItem[it.id]||[]).forEach(ev=>{
-            count++;
-            const thumb = ev.mimeType && ev.mimeType.startsWith('image/') ? driveThumb(ev.evidenceLink) : null;
-            evCards += `<a class="ev-card" href="${ev.evidenceLink}" target="_blank" rel="noopener">
-              ${thumb ? `<img class="ev-thumb" src="${thumb}" loading="lazy" alt="">` : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`}
-              <div class="ev-meta">
-                <div class="name">${it.item}</div>
-                <div class="role">${ev.userName}</div>
-              </div>
-            </a>`;
-          });
-        });
+        evList.forEach(ev=>{ evCards += buildEvCard(ev); });
 
-        if(count > 0){
+        if(evList.length > 0){
           coveredIndicators++;
           standardHasContent = true;
           domainHasContent = true;
