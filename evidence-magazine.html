@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>مجلة الشواهد - التقويم الخارجي 2026</title>
+<title>تقييم الأداء الوظيفي - مرتبط بمؤشرات التقويم الخارجي</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -11,7 +11,8 @@
   :root{
     --paper:#f6f4ee; --ink:#1c2b22; --card:#ffffff;
     --primary:#0e6b4f; --primary-dark:#093c2c; --gold:#a8792f;
-    --line:#dcd7c6; --muted:#6b6559;
+    --line:#dcd7c6; --muted:#6b6559; --danger:#9c3b28; --info:#6b4f8a;
+    --ok:#0e6b4f; --mid:#a8792f; --no:#9c3b28;
     --font-ui:'IBM Plex Sans Arabic',Tahoma,sans-serif;
     --font-mono:'IBM Plex Mono',monospace;
   }
@@ -22,111 +23,160 @@
     padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
   }
   header{background:var(--primary-dark);color:#f4f1e6;padding:26px 16px 20px;text-align:center;border-bottom:3px solid var(--gold);}
-  header p.kicker{margin:0 0 8px;font-size:12px;color:#c9dccf;}
-  header h1{margin:0;font-size:20px;font-weight:700;}
-  header p.sub{margin:6px 0 0;font-size:12.5px;color:#c9dccf;}
+  header h1{margin:0;font-size:19px;font-weight:700;}
+  header p{margin:6px 0 0;font-size:12.5px;color:#c9dccf;}
   header a{color:#e7c98a !important;}
-
-  .wrap{max-width:1000px;margin:0 auto;padding:20px 16px 60px;}
-
-  #loginBox{max-width:400px;margin:60px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:20px 16px 40px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(9,60,44,.05);}
+  #loginBox{max-width:400px;margin:48px auto;text-align:center;}
   #loginBox input{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:var(--font-mono);font-size:22px;letter-spacing:6px;text-align:center;margin-top:10px;}
-  #loginBox button{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-family:var(--font-ui);font-weight:600;font-size:14.5px;cursor:pointer;margin-top:16px;width:100%;}
-  #loginMsg{color:#9c3b28;font-size:13px;margin-top:8px;}
+  #loginBox button, .btn{background:var(--primary);color:#fff;border:none;padding:12px 18px;border-radius:8px;font-family:var(--font-ui);font-weight:600;font-size:14.5px;cursor:pointer;margin-top:16px;width:100%;}
+  #loginBox button:hover, .btn:hover{background:var(--primary-dark);}
+  #loginMsg{color:var(--danger);font-size:13px;margin-top:8px;}
   .hidden{display:none;}
-
-  .toolbar{
-    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-    margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line);
-  }
-  .toolbar .stats{font-size:13px;color:var(--muted);}
-  .toolbar .stats b{color:var(--primary-dark);font-family:var(--font-mono);}
-  .toolbar button{
-    background:var(--gold);color:#fff;border:none;padding:10px 18px;border-radius:8px;
-    font-family:var(--font-ui);font-weight:600;font-size:13.5px;cursor:pointer;
-  }
-  .logout{font-size:12.5px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;}
-
-  .domain-block{margin-bottom:36px;}
-  .domain-title{
-    font-size:19px;font-weight:700;color:var(--primary-dark);margin:0 0 4px;
-    padding-bottom:10px;border-bottom:2px solid var(--gold);
-  }
-  .standard-block{margin-top:20px;}
-  .standard-title{font-size:15px;font-weight:600;color:var(--ink);margin:0 0 10px;}
-
-  .indicator-group{margin-bottom:16px;}
-  .indicator-head{
-    display:flex;align-items:baseline;gap:8px;font-size:13px;color:var(--muted);
-    margin-bottom:8px;padding:6px 0;
-  }
-  .indicator-code{font-family:var(--font-mono);color:var(--gold);font-weight:600;white-space:nowrap;}
-
-  .ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-  .ev-card{
-    background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;
-    color:var(--ink);display:flex;flex-direction:column;
-  }
-  .ev-card.pdf-card{grid-column:span 2;}
-  @media (max-width:480px){ .ev-card.pdf-card{grid-column:1 / -1;} }
-  .ev-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee;display:block;}
-  .ev-icon{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:34px;background:#f0ede2;}
-  .ev-pdf-frame{width:100%;height:340px;border:none;display:block;background:#eee;}
-  .ev-icon.print-only{display:none;}
-  .ev-meta{padding:8px 10px;}
-  .ev-meta .role{font-size:11px;color:var(--muted);}
-  .ev-meta .name{font-size:12px;font-weight:600;color:var(--primary-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ev-meta .open-link{font-size:11px;color:var(--primary);text-decoration:underline;}
-
-  .empty-note{text-align:center;color:var(--muted);font-size:14px;padding:60px 20px;}
-
+  .role-title{font-size:16.5px;font-weight:700;color:var(--primary-dark);}
+  .role-sub{font-size:12.5px;color:var(--muted);}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+  .logout{font-size:12.5px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;width:auto;margin:0;}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab-btn{padding:9px 16px;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:7px;font-family:var(--font-ui);font-weight:600;cursor:pointer;font-size:13px;}
+  .tab-btn.active{background:var(--primary);color:#fff;}
+  select{width:100%;padding:9px;border:1px solid var(--line);border-radius:7px;font-family:var(--font-ui);font-size:13.5px;background:#fff;color:var(--ink);}
+  .item{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--card);}
+  .item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;cursor:pointer;}
+  .item-body{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
+  .item-body.open{display:block;}
+  .chevron{font-size:18px;color:var(--muted);flex-shrink:0;transition:transform .15s;margin-top:2px;}
+  .chevron.open{transform:rotate(180deg);}
+  .item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;}
+  .item-title{font-weight:600;font-size:14.5px;}
+  .weight-badge{font-family:var(--font-mono);background:#e8f2ec;color:var(--primary-dark);border-radius:5px;padding:3px 10px;font-size:12px;white-space:nowrap;}
+  .indicator-box{font-size:12.5px;color:var(--muted);background:#f3ede1;border-right:3px solid var(--gold);border-radius:4px;padding:8px 10px;margin:8px 0;line-height:1.6;}
+  .indicator-box b{color:var(--gold);}
+  .committee-tag{display:inline-block;font-family:var(--font-mono);font-size:11px;background:#efe9f4;color:var(--info);border-radius:5px;padding:3px 9px;margin-top:4px;}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+  .field{flex:1;min-width:140px;}
+  .field label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;}
+  input[type=text], textarea, input[type=number]{width:100%;padding:9px;border:1px solid var(--line);border-radius:7px;font-family:var(--font-ui);font-size:13.5px;background:#fff;color:var(--ink);}
+  select:focus,input:focus,textarea:focus{outline:2px solid var(--primary);outline-offset:1px;}
+  .score-display{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--primary-dark);}
+  .save-note{font-size:11.5px;color:var(--muted);margin-top:5px;min-height:14px;}
+  .total-box{display:flex;justify-content:space-between;align-items:center;background:#eef3ee;border-radius:10px;padding:16px;margin-bottom:16px;}
+  .summary-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px;}
+  .bar-wrap{background:#eae7db;border-radius:5px;height:9px;overflow:hidden;flex:1;margin:0 10px;}
+  .bar-fill{height:100%;background:var(--primary);}
+  .gallery-item{border-right:3px solid var(--gold);padding:10px 14px;margin-bottom:8px;background:#faf9f4;border-radius:6px;font-size:13px;}
+  .gallery-item a{color:var(--primary-dark);}
+  .readonly-note{font-size:12.5px;color:var(--muted);background:#f3ede1;border-radius:6px;padding:9px;margin-top:6px;}
+  .ev-section{border-top:1px dashed var(--line);margin-top:10px;padding-top:10px;}
+  .qr-block{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .qr-box{width:96px;height:96px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .qr-box img,.qr-box canvas{width:100%;height:100%;}
+  .qr-actions{display:flex;flex-direction:column;gap:6px;}
+  .qr-actions button{width:auto;margin:0;padding:6px 12px;font-size:12px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer;}
+  .qr-hint{font-size:11px;color:var(--muted);}
   @media (max-width:480px){
     header h1{font-size:17px;}
-    .domain-title{font-size:17px;}
-    .ev-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
-  }
-
-  @media print{
-    header{background:#fff !important;color:var(--ink) !important;border-bottom:2px solid var(--gold);}
-    header a,.toolbar,.logout{display:none !important;}
-    body{background:#fff;}
-    .domain-block{break-inside:avoid-page;}
-    .indicator-group{break-inside:avoid;}
-    .ev-card{border:1px solid #ccc;}
-    .ev-pdf-frame{display:none;}
-    .ev-icon.print-only{display:flex;}
+    .role-title{font-size:15px;}
+    .tab-btn{font-size:12.5px;padding:8px;}
   }
 </style>
 </head>
 <body>
 
 <header>
-  <p class="kicker">متوسطة الحارث بن هشام</p>
-  <h1>مجلة الشواهد</h1>
-  <p class="sub">عرض شامل للشواهد الموثّقة — جاهزة لزيارة التقويم الخارجي</p>
+  <p style="margin:0 0 8px;font-size:12px;color:#c9dccf;">متوسطة الحارث بن هشام</p>
+  <h1>تقييم الأداء الوظيفي</h1>
+  <p>مرتبط بمؤشرات التقويم الخارجي ولجان الدليل التنظيمي</p>
   <p style="margin-top:10px;"><a href="index.html" style="text-decoration:underline;font-size:12.5px;">🏠 الرئيسية</a></p>
 </header>
 
 <div class="wrap">
 
-  <div id="loginBox">
-    <div style="font-weight:700;font-size:16px;margin-bottom:6px;">تسجيل الدخول</div>
-    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري (PIN)</label>
+  <!-- عرض عام بدون تسجيل دخول -->
+  <div id="publicBox" class="hidden">
+    <div class="card">
+      <div class="role-title">نظرة عامة على الأداء الوظيفي بالمدرسة</div>
+      <div class="role-sub">عرض إجمالي فقط — لا يظهر اسم أي موظف أو تقييمه الفردي</div>
+    </div>
+    <div class="card">
+      <div class="total-box">
+        <span>نسبة اكتمال التقييمات</span>
+        <span class="score-display" id="pubCompletion">—</span>
+      </div>
+      <div class="role-title" style="margin-bottom:8px;">متوسط الأداء حسب الفئة الوظيفية</div>
+      <div id="pubByModel"></div>
+      <div class="role-title" style="margin:16px 0 8px;">متوسط الأداء حسب اللجنة المسؤولة</div>
+      <div id="pubByCommittee"></div>
+    </div>
+  </div>
+
+  <div id="loginBox" class="card">
+    <div class="role-title">تسجيل الدخول</div>
+    <label style="font-size:13px;color:var(--muted)">أدخل كودك السري الخاص (PIN)</label>
     <input type="text" inputmode="numeric" id="codeInput" placeholder="••••" maxlength="8">
     <button onclick="doLogin()">دخول</button>
     <div id="loginMsg"></div>
   </div>
 
   <div id="appBox" class="hidden">
-    <div class="toolbar">
-      <div class="stats" id="statsLine"></div>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <button onclick="window.print()">🖨️ طباعة / تصدير PDF</button>
-        <button class="logout" onclick="logout()">تسجيل خروج</button>
+    <div class="topbar">
+      <div>
+        <div class="role-title" id="roleTitle"></div>
+        <div class="role-sub" id="roleSub"></div>
       </div>
+      <button class="logout" onclick="logout()">تسجيل خروج</button>
     </div>
-    <div id="magazineContent"></div>
+
+    <div class="tabs" id="tabsBar"></div>
+
+    <div id="myEvalTab">
+      <div class="total-box">
+        <span>التقدير الإجمالي المرجّح</span>
+        <span class="score-display" id="myTotal">—</span>
+      </div>
+      <div id="myItemsList"></div>
+    </div>
+
+    <div id="adminEvalTab" class="hidden">
+      <div class="card">
+        <label style="font-size:13px;color:var(--muted)">اختر الموظف</label>
+        <select id="staffSelect" onchange="loadStaffEval()"></select>
+      </div>
+      <div class="total-box">
+        <span>التقدير الإجمالي المرجّح لهذا الموظف</span>
+        <span class="score-display" id="staffTotal">—</span>
+      </div>
+      <div id="staffItemsList"></div>
+    </div>
+
+    <div id="galleryTab" class="hidden">
+      <div class="card">
+        <div class="role-title">معرض الشواهد حسب المعيار والمؤشر</div>
+        <div class="role-sub">اختر المعيار ثم المؤشر لعرض كل الشواهد المرتبطة به، أو اتركهما لعرض الكل</div>
+        <div class="row" style="margin-top:10px;">
+          <div class="field">
+            <label>المعيار</label>
+            <select id="filterStandard" onchange="onStandardChange()">
+              <option value="">-- كل المعايير --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>المؤشر</label>
+            <select id="filterIndicator" onchange="renderFilteredGallery()">
+              <option value="">-- كل المؤشرات --</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" onclick="exportFormattedFile()">تصدير ملف منسّق (PDF) للمعيار/المؤشر المحدد</button>
+      </div>
+      <div id="galleryList"></div>
+    </div>
+
   </div>
+
+  <!-- منطقة مخفية تُستخدم للطباعة/التصدير فقط -->
+  <div id="printArea" class="hidden"></div>
 
 </div>
 
@@ -134,154 +184,550 @@
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbyJzPNLJVyGJwsPIvwVwa43CgxoxrTt5ZFftr_4MLD0ikmNqlxL4HnGfqOs4EkE_zuqNw/exec";
 
+let currentUser = null, currentRole = null, isAdmin = false;
+let allEvalItems = []; // لملء قائمة الموظفين لدى الإدمن
+
 async function apiCall(payload){
   const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
   return res.json();
 }
 
+// ==== عرض عام بدون دخول عبر ?public=1 في الرابط ====
+if (new URLSearchParams(location.search).get('public') === '1') {
+  document.getElementById('publicBox').classList.remove('hidden');
+  loadPublicSummary();
+}
+async function loadPublicSummary(){
+  const res = await apiCall({action:'getEvalPublicSummary'});
+  if(!res.success) return;
+  document.getElementById('pubCompletion').textContent = res.overallCompletion + '%';
+  renderBars('pubByModel', res.byModel);
+  renderBars('pubByCommittee', res.byCommittee);
+}
+function renderBars(elId, arr){
+  const box = document.getElementById(elId);
+  box.innerHTML = '';
+  arr.forEach(x=>{
+    const pct = x.avgScore ? Math.round((x.avgScore/5)*100) : 0;
+    const div = document.createElement('div');
+    div.className = 'summary-row';
+    div.innerHTML = `<span>${x.name}</span>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span>${x.avgScore ?? '—'} / 5</span>`;
+    box.appendChild(div);
+  });
+}
+
+// ==== تسجيل الدخول ====
 async function doLogin(){
   const code = document.getElementById('codeInput').value.trim();
   if(!code) return;
   document.getElementById('loginMsg').textContent = 'جارِ التحقق...';
   const res = await apiCall({action:'login', code});
   if(res.success){
-    localStorage.setItem('mag_code', code);
+    currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
+    localStorage.setItem('eval_code', code);
     showApp();
   } else {
     document.getElementById('loginMsg').textContent = res.message || 'خطأ في تسجيل الدخول';
   }
 }
-function logout(){ localStorage.removeItem('mag_code'); location.reload(); }
+function logout(){ localStorage.removeItem('eval_code'); location.reload(); }
 
 async function showApp(){
   document.getElementById('loginBox').classList.add('hidden');
   document.getElementById('appBox').classList.remove('hidden');
-  await loadMagazine();
-}
+  document.getElementById('roleTitle').textContent = currentUser;
+  document.getElementById('roleSub').textContent = currentRole;
 
-// يستخرج معرّف ملف Drive من الرابط
-function driveFileId(link){
-  const m = String(link).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(link).match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  return m ? m[1] : null;
-}
-function driveThumb(link){
-  const id = driveFileId(link);
-  return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w500` : null;
-}
-function drivePreview(link){
-  const id = driveFileId(link);
-  return id ? `https://drive.google.com/file/d/${id}/preview` : null;
-}
-function iconFor(mimeType){
-  if(!mimeType) return '🔗';
-  if(mimeType.includes('pdf')) return '📄';
-  if(mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
-  if(mimeType.includes('word') || mimeType.includes('document')) return '📝';
-  if(mimeType.includes('presentation')) return '📽️';
-  return '📎';
-}
-function buildEvCard(ev){
-  const isImage = ev.mimeType && ev.mimeType.startsWith('image/');
-  const isPdf = ev.mimeType && ev.mimeType.includes('pdf');
-  let media;
-  if(isImage){
-    const thumb = driveThumb(ev.evidenceLink);
-    media = thumb ? `<img class="ev-thumb" src="${thumb}" loading="lazy" alt="">` : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
-  } else if(isPdf){
-    const prev = drivePreview(ev.evidenceLink);
-    media = prev
-      ? `<iframe class="ev-pdf-frame" src="${prev}" loading="lazy"></iframe><div class="ev-icon print-only">📄</div>`
-      : `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
-  } else {
-    media = `<div class="ev-icon">${iconFor(ev.mimeType)}</div>`;
+  const tabs = document.getElementById('tabsBar');
+  tabs.innerHTML = '';
+  addTab(tabs, 'تقييمي', 'myEvalTab', true);
+  if(isAdmin){
+    addTab(tabs, 'تقييم الموظفين', 'adminEvalTab', false);
+    addTab(tabs, 'معرض الشواهد', 'galleryTab', false);
   }
-  return `<div class="ev-card${isPdf ? ' pdf-card' : ''}">
-    ${media}
-    <div class="ev-meta">
-      <div class="name">${ev.itemLabel || ev.roleOrModel || ''}</div>
-      <div class="role">${ev.userName}${ev.source ? ' — '+ev.source : ''}</div>
-      <a class="open-link" href="${ev.evidenceLink}" target="_blank" rel="noopener">فتح ↗</a>
-    </div>
-  </div>`;
+  loadMyEval();
+}
+function addTab(container, label, targetId, active){
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (active ? ' active' : '');
+  btn.textContent = label;
+  btn.onclick = ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ['myEvalTab','adminEvalTab','galleryTab'].forEach(id=>{
+      document.getElementById(id).classList.toggle('hidden', id!==targetId);
+    });
+    if(targetId==='adminEvalTab') loadAdminStaffList();
+    if(targetId==='galleryTab') loadGallery();
+  };
+  container.appendChild(btn);
 }
 
-async function loadMagazine(){
-  const [fwRes, evRes] = await Promise.all([
-    apiCall({action:'getFullFramework'}),
-    apiCall({action:'getAllReadinessEvidence'}) // يرجّع الآن كل الشواهد الموحّدة من النظامين معًا
-  ]);
-  if(!fwRes.success || !evRes.success) return;
+// ==== تقييمي (الموظف) ====
+let allEvidenceEval = [];
+let evalItemsById = {};
+function evidenceForEvalItem(it){
+  return allEvidenceEval.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
+}
 
-  const framework = fwRes.framework;
-  const evByCode = {};
-  evRes.items.forEach(ev=>{
-    if(!ev.code) return; // نتجاهل الشواهد المرتبطة ببند إجرائي بدون مؤشر رسمي (لا تُعرض بالمجلة)
-    if(!evByCode[ev.code]) evByCode[ev.code] = [];
-    evByCode[ev.code].push(ev);
+async function loadMyEval(){
+  document.getElementById('myItemsList').innerHTML = '<div class="save-note" style="text-align:center;padding:30px;">⏳ جارِ تحميل البيانات...</div>';
+  const res = await apiCall({action:'getEvalPageData', userName: currentUser, isAdmin:false});
+  if(!res.success) return;
+  allEvidenceEval = res.evidence || [];
+  renderMyItems(res.items);
+}
+function computeWeightedTotal(items){
+  let sum=0, weightScored=0, totalWeight=0;
+  items.forEach(it=>{
+    totalWeight += Number(it.weight)||0;
+    if(it.score){ sum += (Number(it.score)/5) * (Number(it.weight)||0); weightScored += Number(it.weight)||0; }
   });
+  if(weightScored===0) return null;
+  return Math.round((sum/totalWeight)*1000)/10; // نسبة % من إجمالي الوزن
+}
+function renderMyItems(items){
+  const total = computeWeightedTotal(items);
+  document.getElementById('myTotal').textContent = total!==null ? total+'%' : 'لم يُقيَّم بعد';
+  const list = document.getElementById('myItemsList');
+  list.innerHTML = '';
+  items.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="item-header" onclick="toggleCard(this)">
+        <div class="item-top" style="flex:1;">
+          <div class="item-title">${it.element}</div>
+          <span class="weight-badge">الوزن ${it.weight}%</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </div>
+      <div class="item-body">
+        ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+        ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
+        <span class="committee-tag">${it.committee}</span>
+        <div class="save-note" id="note-${it.id}"></div>
 
-  let totalEvidence = evRes.items.length;
-  let coveredIndicators = 0, totalIndicators = 0;
+        <div class="ev-section">
+          <label style="font-size:12px;color:var(--muted);display:block;margin:8px 0 4px;">الشواهد (يمكن إضافة أكثر من شاهد)</label>
+          <div id="ev-list-${it.id}"></div>
+          <div class="row">
+            <div class="field">
+              <input type="text" class="f-newlink" data-id="${it.id}" placeholder="https://... ثم اضغط إضافة">
+            </div>
+            <button type="button" class="btn" style="width:auto;margin:0;padding:8px 14px;" onclick="addLinkEvalEvidence('${it.id}')">إضافة رابط</button>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label style="font-size:11px;">أو ارفع صورة/ملف مباشرة</label>
+              <input type="file" class="f-file" data-id="${it.id}" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+            </div>
+          </div>
+        </div>
 
-  const content = document.getElementById('magazineContent');
-  content.innerHTML = '';
-  let anyRendered = false;
+        <div class="readonly-note">
+          <b>درجة المقيّم:</b> ${it.score ? it.score+' / 5' : 'لم تُدخَل بعد'}
+          ${it.reviewerNotes ? '<br><b>ملاحظات المقيّم:</b> ' + it.reviewerNotes : ''}
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+    div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
+    evalItemsById[it.id] = it;
+    renderEvalEvidenceList(it.id);
+  });
+}
 
-  Object.keys(framework).forEach(domain=>{
-    const standards = framework[domain];
-    const domainBlock = document.createElement('div');
-    domainBlock.className = 'domain-block';
-    let domainHtml = `<div class="domain-title">${domain}</div>`;
-    let domainHasContent = false;
+function toggleCard(headerEl){
+  const body = headerEl.nextElementSibling;
+  const chevron = headerEl.querySelector('.chevron');
+  const isOpen = body.classList.toggle('open');
+  chevron.classList.toggle('open', isOpen);
+}
 
-    Object.keys(standards).forEach(standard=>{
-      let standardHtml = '';
-      let standardHasContent = false;
+function renderEvalEvidenceList(itemId){
+  const box = document.getElementById('ev-list-'+itemId);
+  if(!box) return;
+  box.innerHTML = '';
+  const it = evalItemsById[itemId];
+  const list = it ? evidenceForEvalItem(it) : [];
+  if(list.length===0){
+    box.innerHTML = '<div class="save-note">لا توجد شواهد مضافة بعد</div>';
+    return;
+  }
+  list.forEach(ev=>{
+    const row = document.createElement('div');
+    row.className = 'qr-block';
+    const a = document.createElement('a');
+    a.href = ev.evidenceLink; a.target = '_blank'; a.rel = 'noopener';
+    const qrDiv = document.createElement('div');
+    qrDiv.className = 'qr-box';
+    qrDiv.id = 'qr-img-'+ev.id;
+    a.appendChild(qrDiv);
+    const actions = document.createElement('div');
+    actions.className = 'qr-actions';
+    const canDelete = ev.userName === currentUser;
+    actions.innerHTML = `
+      <span class="qr-hint">${ev.userName}</span>
+      <button type="button" onclick="downloadQr('${ev.id}')">تنزيل QR</button>
+      ${canDelete ? `<button type="button" style="background:#c0392b;" onclick="deleteEvalEvidenceItem('${ev.id}','${itemId}')">حذف</button>` : ''}
+    `;
+    row.appendChild(a);
+    row.appendChild(actions);
+    box.appendChild(row);
+    new QRCode(qrDiv, { text: ev.evidenceLink, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
+  });
+}
 
-      standards[standard].forEach(([code, text])=>{
-        totalIndicators++;
-        const evList = evByCode[code] || [];
-        let evCards = '';
-        evList.forEach(ev=>{ evCards += buildEvCard(ev); });
+async function addLinkEvalEvidence(itemId){
+  const input = document.querySelector(`.f-newlink[data-id="${itemId}"]`);
+  const link = input.value.trim();
+  if(!link) return;
+  const noteEl = document.getElementById('note-'+itemId);
+  noteEl.textContent = 'جارِ الإضافة...';
+  const res = await apiCall({action:'addEvalEvidenceMulti', itemId, userName: currentUser, evidenceLink: link});
+  if(res.success){
+    const it = evalItemsById[itemId];
+    allEvidenceEval.push({ id: res.id, code: it ? it.code : '', itemId, userName: currentUser, evidenceLink: link });
+    renderEvalEvidenceList(itemId);
+    input.value = '';
+    noteEl.textContent = 'تمت الإضافة ✓';
+  } else {
+    noteEl.textContent = res.message || 'فشلت الإضافة';
+  }
+}
 
-        if(evList.length > 0){
-          coveredIndicators++;
-          standardHasContent = true;
-          domainHasContent = true;
-          anyRendered = true;
-          standardHtml += `
-            <div class="indicator-group">
-              <div class="indicator-head"><span class="indicator-code">(${code})</span><span>${text}</span></div>
-              <div class="ev-grid">${evCards}</div>
-            </div>`;
-        }
+async function deleteEvalEvidenceItem(evidenceId, itemId){
+  if(!confirm('حذف هذا الشاهد؟')) return;
+  const noteEl = document.getElementById('note-'+itemId);
+  const res = await apiCall({action:'deleteEvalEvidenceMulti', evidenceId, userName: currentUser});
+  if(res.success){
+    allEvidenceEval = allEvidenceEval.filter(e=>e.id!==evidenceId);
+    renderEvalEvidenceList(itemId);
+    noteEl.textContent = 'تم الحذف';
+  } else {
+    noteEl.textContent = res.message || 'تعذّر الحذف';
+  }
+}
+
+function downloadQr(id){
+  const container = document.getElementById('qr-img-'+id);
+  if(!container) return;
+  const canvas = container.querySelector('canvas');
+  const img = container.querySelector('img');
+  const dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+  if(!dataUrl) return;
+  const link = document.createElement('a');
+  link.href = dataUrl; link.download = 'qr-' + id + '.png';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+async function uploadEvidenceFile(id, div, file){
+  if(!file) return;
+  const noteEl = document.getElementById('note-'+id);
+  const maxMB = 8;
+  if(file.size > maxMB*1024*1024){
+    noteEl.textContent = `الملف كبير (أكبر من ${maxMB}MB) — اختر ملفًا أصغر`;
+    return;
+  }
+  noteEl.textContent = 'جارِ رفع الملف...';
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const base64Data = reader.result.split(',')[1];
+    const res = await apiCall({ action: 'uploadEvidence', fileName: file.name, mimeType: file.type, base64Data });
+    if(res.success){
+      const addRes = await apiCall({action:'addEvalEvidenceMulti', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name});
+      if(addRes.success){
+        const it = evalItemsById[id];
+        allEvidenceEval.push({ id: addRes.id, code: it ? it.code : '', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
+        renderEvalEvidenceList(id);
+        noteEl.textContent = 'تم رفع الملف وإضافته ✓';
+      } else {
+        noteEl.textContent = addRes.message || 'فشل حفظ الشاهد';
+      }
+    } else {
+      noteEl.textContent = res.message || 'فشل رفع الملف';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+let saveTimers = {};
+
+// ==== تقييم الموظفين (الإدمن) ====
+async function loadAdminStaffList(){
+  const res = await apiCall({action:'getEvalPageData', isAdmin:true});
+  if(!res.success) return;
+  allEvalItems = res.items;
+  adminAllEvidence = res.evidence || [];
+  const names = [...new Set(allEvalItems.map(i=>i.userName))].sort();
+  const sel = document.getElementById('staffSelect');
+  sel.innerHTML = '<option value="">-- اختر --</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
+}
+let adminAllEvidence = [];
+function adminEvidenceFor(it){
+  return adminAllEvidence.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
+}
+function loadStaffEval(){
+  const name = document.getElementById('staffSelect').value;
+  const items = allEvalItems.filter(i=>i.userName===name);
+  const total = computeWeightedTotal(items);
+  document.getElementById('staffTotal').textContent = total!==null ? total+'%' : '—';
+  const list = document.getElementById('staffItemsList');
+  list.innerHTML = '';
+  if(!name) return;
+  items.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <div class="item-header" onclick="toggleCard(this)">
+        <div class="item-top" style="flex:1;">
+          <div class="item-title">${it.element}</div>
+          <span class="weight-badge">الوزن ${it.weight}%</span>
+        </div>
+        <span class="chevron">⌄</span>
+      </div>
+      <div class="item-body">
+        ${it.code ? `<div class="indicator-box"><b>مؤشر التقويم الخارجي (${it.code}):</b> ${it.indicatorText}</div>` : ''}
+        ${it.requiredEvidence ? `<div class="indicator-box"><b>الشواهد المطلوبة:</b> ${it.requiredEvidence}</div>` : ''}
+        <span class="committee-tag">${it.committee}</span>
+        <div id="qr-block-admin-${it.id}"></div>
+        <div class="row">
+          <div class="field">
+            <label>الدرجة (1-5)</label>
+            <input type="number" min="1" max="5" class="f-score" data-id="${it.id}" value="${it.score||''}">
+          </div>
+          <div class="field">
+            <label>ملاحظات المقيّم</label>
+            <input type="text" class="f-rnotes" data-id="${it.id}" value="${it.reviewerNotes||''}">
+          </div>
+        </div>
+        <div class="save-note" id="anote-${it.id}"></div>
+      </div>
+    `;
+    list.appendChild(div);
+    div.querySelectorAll('.f-score, .f-rnotes').forEach(el=>{
+      el.addEventListener('change', ()=>saveScore(it.id, div));
+    });
+    const box = document.getElementById('qr-block-admin-'+it.id);
+    const evList = adminEvidenceFor(it);
+    if(evList.length===0){
+      box.innerHTML = '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>';
+    } else {
+      evList.forEach(ev=>{
+        const row = document.createElement('div');
+        row.className = 'qr-block';
+        const a = document.createElement('a');
+        a.href = ev.evidenceLink; a.target = '_blank'; a.rel = 'noopener';
+        const qrDiv = document.createElement('div');
+        qrDiv.className = 'qr-box';
+        qrDiv.id = 'qr-img-admin-'+ev.id;
+        a.appendChild(qrDiv);
+        const label = document.createElement('span');
+        label.className = 'qr-hint';
+        label.textContent = ev.userName;
+        row.appendChild(a); row.appendChild(label);
+        box.appendChild(row);
+        new QRCode(qrDiv, { text: ev.evidenceLink, width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
       });
+    }
+  });
+}
+function saveScore(id, div){
+  clearTimeout(saveTimers[id]);
+  saveTimers[id] = setTimeout(async ()=>{
+    const score = div.querySelector('.f-score').value;
+    const reviewerNotes = div.querySelector('.f-rnotes').value;
+    document.getElementById('anote-'+id).textContent = 'جارِ الحفظ...';
+    const res = await apiCall({action:'updateEvalScore', id, score, reviewerNotes});
+    document.getElementById('anote-'+id).textContent = res.success ? 'تم الحفظ ✓' : 'خطأ في الحفظ';
+    // تحديث الإجمالي محليًا
+    const idx = allEvalItems.findIndex(i=>i.id===id);
+    if(idx>-1){ allEvalItems[idx].score = score; allEvalItems[idx].reviewerNotes = reviewerNotes; }
+    const name = document.getElementById('staffSelect').value;
+    const items = allEvalItems.filter(i=>i.userName===name);
+    const total = computeWeightedTotal(items);
+    document.getElementById('staffTotal').textContent = total!==null ? total+'%' : '—';
+  }, 500);
+}
 
-      if(standardHasContent){
-        domainHtml += `<div class="standard-block"><div class="standard-title">${standard}</div>${standardHtml}</div>`;
+// ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
+let galleryItems = [];
+
+let galleryAllEvidence = [];
+function galleryEvidenceForEval(it){
+  return galleryAllEvidence.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
+}
+async function loadGallery(){
+  document.getElementById('galleryList').innerHTML = '<div class="readonly-note" style="text-align:center;">⏳ جارِ تحميل البيانات...</div>';
+  const res = await apiCall({action:'getEvalGalleryData'});
+  if(!res.success) return;
+  galleryItems = res.items;
+  galleryAllEvidence = res.evidence || [];
+  populateStandardFilter();
+  populateIndicatorFilter(); // تعبئة كل المؤشرات مباشرة — يقدر يختار المؤشر مباشرة بدون المرور بالمعيار
+  renderFilteredGallery();
+}
+
+function populateStandardFilter(){
+  const sel = document.getElementById('filterStandard');
+  const standards = [...new Set(galleryItems.map(i=>i.standard))].sort();
+  sel.innerHTML = '<option value="">-- كل المعايير --</option>' +
+    standards.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function populateIndicatorFilter(){
+  const standard = document.getElementById('filterStandard').value;
+  const indSel = document.getElementById('filterIndicator');
+  const selectedBefore = indSel.value;
+  const filtered = standard ? galleryItems.filter(i=>i.standard===standard) : galleryItems;
+  const indicators = [...new Map(filtered.filter(i=>i.code).map(i=>[i.code, i.indicatorText])).entries()]
+    .sort((a,b)=>a[0].localeCompare(b[0]));
+  indSel.innerHTML = '<option value="">-- كل المؤشرات --</option>' +
+    indicators.map(([code,text])=>`<option value="${code}">(${code}) ${text}</option>`).join('');
+  // إبقاء اختيار المؤشر إن كان لا يزال ضمن القائمة الجديدة
+  if(indicators.some(([code])=>code===selectedBefore)) indSel.value = selectedBefore;
+}
+
+function onStandardChange(){
+  populateIndicatorFilter();
+  renderFilteredGallery();
+}
+
+function currentFilteredItems(){
+  const standard = document.getElementById('filterStandard').value;
+  const indicator = document.getElementById('filterIndicator').value;
+  return galleryItems.filter(i=>
+    (!standard || i.standard===standard) && (!indicator || i.code===indicator)
+  );
+}
+
+function renderFilteredGallery(){
+  const items = currentFilteredItems();
+  const list = document.getElementById('galleryList');
+  list.innerHTML = '';
+  if(items.length===0){ list.innerHTML = '<div class="readonly-note">لا يوجد ما يطابق هذا الاختيار</div>'; return; }
+  // تجميع حسب المعيار ثم المؤشر
+  const byStandard = {};
+  items.forEach(it=>{
+    const key = it.standard + '|' + (it.code||'—');
+    if(!byStandard[key]) byStandard[key] = { standard: it.standard, code: it.code, indicatorText: it.indicatorText, items: [] };
+    byStandard[key].items.push(it);
+  });
+  Object.values(byStandard).forEach(group=>{
+    const h = document.createElement('div');
+    h.className = 'role-title';
+    h.style.marginTop = '14px';
+    h.textContent = group.code ? `${group.standard} — (${group.code}) ${group.indicatorText}` : group.standard;
+    list.appendChild(h);
+    group.items.forEach(it=>{
+      const div = document.createElement('div');
+      div.className = 'gallery-item';
+      const evList = galleryEvidenceForEval(it);
+      div.innerHTML = `<b>${it.userName}</b> — ${it.element}
+        ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}`;
+      list.appendChild(div);
+      if(evList.length===0){
+        const empty = document.createElement('div');
+        empty.className = 'readonly-note';
+        empty.style.marginBottom = '8px';
+        empty.textContent = 'لا يوجد شاهد مرفوع بعد';
+        list.appendChild(empty);
+      } else {
+        evList.forEach(ev=>{
+          const row = document.createElement('div');
+          row.className = 'qr-block';
+          const a = document.createElement('a');
+          a.href = ev.evidenceLink; a.target = '_blank'; a.rel = 'noopener';
+          const qrDiv = document.createElement('div');
+          qrDiv.className = 'qr-box';
+          qrDiv.id = 'qr-img-g-'+ev.id;
+          a.appendChild(qrDiv);
+          const label = document.createElement('span');
+          label.className = 'qr-hint';
+          label.textContent = ev.userName;
+          row.appendChild(a); row.appendChild(label);
+          list.appendChild(row);
+          new QRCode(qrDiv, { text: ev.evidenceLink, width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
+        });
       }
     });
+  });
+}
 
-    if(domainHasContent){
-      domainBlock.innerHTML = domainHtml;
-      content.appendChild(domainBlock);
+// ==== تصدير ملف منسّق (طباعة PDF) للمعيار/المؤشر المحدد ====
+function exportFormattedFile(){
+  const items = currentFilteredItems();
+  if(items.length===0){ alert('لا يوجد ما يطابق هذا الاختيار للتصدير'); return; }
+  const standard = document.getElementById('filterStandard').value || 'كل المعايير';
+  const indicatorSel = document.getElementById('filterIndicator');
+  const indicatorText = indicatorSel.value ?
+    indicatorSel.options[indicatorSel.selectedIndex].textContent : 'كل المؤشرات';
+
+  let rows = '';
+  let i = 0;
+  items.forEach(it=>{
+    const evList = galleryEvidenceForEval(it);
+    if(evList.length===0){
+      i++;
+      rows += `<tr><td>${i}</td><td>${it.userName}</td><td>${it.element}</td><td>${it.committee}</td><td>${it.score||'—'}</td><td>لا يوجد</td></tr>`;
+    } else {
+      evList.forEach(ev=>{
+        i++;
+        rows += `<tr><td>${i}</td><td>${it.userName}</td><td>${it.element}</td><td>${it.committee}</td><td>${it.score||'—'}</td><td><a href="${ev.evidenceLink}">فتح الشاهد</a></td></tr>`;
+      });
     }
   });
 
-  document.getElementById('statsLine').innerHTML =
-    `<b>${totalEvidence}</b> شاهدًا موثّقًا — يغطون <b>${coveredIndicators}</b> من أصل <b>${totalIndicators}</b> مؤشرًا رسميًا`;
+  const html = `
+    <html dir="rtl" lang="ar"><head><meta charset="UTF-8">
+    <title>تقرير الشواهد</title>
+    <style>
+      body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#22312c;}
+      h1{font-size:18px;color:#154d40;border-bottom:2px solid #1f6f5c;padding-bottom:8px;}
+      .meta{font-size:13px;color:#555;margin-bottom:16px;}
+      .meta b{color:#154d40;}
+      table{width:100%;border-collapse:collapse;font-size:12px;}
+      th,td{border:1px solid #ccc;padding:6px 8px;text-align:right;}
+      th{background:#1f6f5c;color:#fff;}
+      tr:nth-child(even){background:#f7f9f8;}
+      .footer{margin-top:20px;font-size:11px;color:#888;}
+    </style></head>
+    <body>
+      <h1>تقرير الشواهد المرتبطة بمعيار التقويم الخارجي</h1>
+      <div class="meta">
+        <b>المعيار:</b> ${standard}<br>
+        <b>المؤشر:</b> ${indicatorText}<br>
+        <b>عدد الشواهد:</b> ${items.length}<br>
+        <b>تاريخ التصدير:</b> ${new Date().toLocaleDateString('ar-SA')}
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>الموظف</th><th>العنصر (معيار الأداء الوظيفي)</th><th>اللجنة المسؤولة</th><th>الدرجة</th><th>رابط الشاهد</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">تم إنشاء هذا التقرير آليًا من نظام متابعة الشواهد وتقييم الأداء الوظيفي.</div>
+      <script>window.onload = () => window.print();<\/script>
+    </body></html>`;
 
-  if(!anyRendered){
-    content.innerHTML = '<div class="empty-note">لا توجد شواهد موثّقة بعد. أضف شواهد من نظام متابعة الشواهد وستظهر هنا تلقائيًا.</div>';
-  }
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
 }
 
 window.addEventListener('load', async ()=>{
-  const saved = localStorage.getItem('mag_code');
+  const saved = localStorage.getItem('eval_code');
   if(saved){
     document.getElementById('codeInput').value = saved;
     const res = await apiCall({action:'login', code: saved});
-    if(res.success) showApp();
+    if(res.success){
+      currentUser = res.userName; currentRole = res.role; isAdmin = res.isAdmin;
+      showApp();
+    }
   }
 });
 </script>
