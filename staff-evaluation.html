@@ -261,7 +261,11 @@ function addTab(container, label, targetId, active){
 }
 
 // ==== تقييمي (الموظف) ====
-let evidenceByEvalItem = {};
+let allEvidenceEval = [];
+let evalItemsById = {};
+function evidenceForEvalItem(it){
+  return allEvidenceEval.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+}
 
 async function loadMyEval(){
   const [itemsRes, evRes] = await Promise.all([
@@ -269,13 +273,7 @@ async function loadMyEval(){
     apiCall({action:'getAllEvalEvidenceMulti'})
   ]);
   if(!itemsRes.success) return;
-  evidenceByEvalItem = {};
-  if(evRes.success){
-    evRes.items.forEach(ev=>{
-      if(!evidenceByEvalItem[ev.itemId]) evidenceByEvalItem[ev.itemId] = [];
-      evidenceByEvalItem[ev.itemId].push(ev);
-    });
-  }
+  allEvidenceEval = evRes.success ? evRes.items : [];
   renderMyItems(itemsRes.items);
 }
 function computeWeightedTotal(items){
@@ -329,6 +327,7 @@ function renderMyItems(items){
     `;
     list.appendChild(div);
     div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
+    evalItemsById[it.id] = it;
     renderEvalEvidenceList(it.id);
   });
 }
@@ -337,7 +336,8 @@ function renderEvalEvidenceList(itemId){
   const box = document.getElementById('ev-list-'+itemId);
   if(!box) return;
   box.innerHTML = '';
-  const list = evidenceByEvalItem[itemId] || [];
+  const it = evalItemsById[itemId];
+  const list = it ? evidenceForEvalItem(it) : [];
   if(list.length===0){
     box.innerHTML = '<div class="save-note">لا توجد شواهد مضافة بعد</div>';
     return;
@@ -374,8 +374,8 @@ async function addLinkEvalEvidence(itemId){
   noteEl.textContent = 'جارِ الإضافة...';
   const res = await apiCall({action:'addEvalEvidenceMulti', itemId, userName: currentUser, evidenceLink: link});
   if(res.success){
-    if(!evidenceByEvalItem[itemId]) evidenceByEvalItem[itemId] = [];
-    evidenceByEvalItem[itemId].push({ id: res.id, itemId, userName: currentUser, evidenceLink: link });
+    const it = evalItemsById[itemId];
+    allEvidenceEval.push({ id: res.id, code: it ? it.code : '', itemId, userName: currentUser, evidenceLink: link });
     renderEvalEvidenceList(itemId);
     input.value = '';
     noteEl.textContent = 'تمت الإضافة ✓';
@@ -389,7 +389,7 @@ async function deleteEvalEvidenceItem(evidenceId, itemId){
   const noteEl = document.getElementById('note-'+itemId);
   const res = await apiCall({action:'deleteEvalEvidenceMulti', evidenceId, userName: currentUser});
   if(res.success){
-    evidenceByEvalItem[itemId] = (evidenceByEvalItem[itemId]||[]).filter(e=>e.id!==evidenceId);
+    allEvidenceEval = allEvidenceEval.filter(e=>e.id!==evidenceId);
     renderEvalEvidenceList(itemId);
     noteEl.textContent = 'تم الحذف';
   } else {
@@ -425,8 +425,8 @@ async function uploadEvidenceFile(id, div, file){
     if(res.success){
       const addRes = await apiCall({action:'addEvalEvidenceMulti', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name});
       if(addRes.success){
-        if(!evidenceByEvalItem[id]) evidenceByEvalItem[id] = [];
-        evidenceByEvalItem[id].push({ id: addRes.id, itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
+        const it = evalItemsById[id];
+        allEvidenceEval.push({ id: addRes.id, code: it ? it.code : '', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
         renderEvalEvidenceList(id);
         noteEl.textContent = 'تم رفع الملف وإضافته ✓';
       } else {
@@ -449,18 +449,15 @@ async function loadAdminStaffList(){
   ]);
   if(!res.success) return;
   allEvalItems = res.items;
-  adminEvidenceByItem = {};
-  if(evRes.success){
-    evRes.items.forEach(ev=>{
-      if(!adminEvidenceByItem[ev.itemId]) adminEvidenceByItem[ev.itemId] = [];
-      adminEvidenceByItem[ev.itemId].push(ev);
-    });
-  }
+  adminAllEvidence = evRes.success ? evRes.items : [];
   const names = [...new Set(allEvalItems.map(i=>i.userName))].sort();
   const sel = document.getElementById('staffSelect');
   sel.innerHTML = '<option value="">-- اختر --</option>' + names.map(n=>`<option value="${n}">${n}</option>`).join('');
 }
-let adminEvidenceByItem = {};
+let adminAllEvidence = [];
+function adminEvidenceFor(it){
+  return adminAllEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+}
 function loadStaffEval(){
   const name = document.getElementById('staffSelect').value;
   const items = allEvalItems.filter(i=>i.userName===name);
@@ -498,7 +495,7 @@ function loadStaffEval(){
       el.addEventListener('change', ()=>saveScore(it.id, div));
     });
     const box = document.getElementById('qr-block-admin-'+it.id);
-    const evList = adminEvidenceByItem[it.id] || [];
+    const evList = adminEvidenceFor(it);
     if(evList.length===0){
       box.innerHTML = '<div class="readonly-note">لم يُرسل الموظف شاهدًا بعد</div>';
     } else {
@@ -542,7 +539,10 @@ function saveScore(id, div){
 // ==== معرض الشواهد مع فلترة حسب المعيار والمؤشر ====
 let galleryItems = [];
 
-let galleryEvidenceMap = {};
+let galleryAllEvidence = [];
+function galleryEvidenceForEval(it){
+  return galleryAllEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+}
 async function loadGallery(){
   const [res, evRes] = await Promise.all([
     apiCall({action:'getEvidenceGallery'}),
@@ -550,13 +550,7 @@ async function loadGallery(){
   ]);
   if(!res.success) return;
   galleryItems = res.items;
-  galleryEvidenceMap = {};
-  if(evRes.success){
-    evRes.items.forEach(ev=>{
-      if(!galleryEvidenceMap[ev.itemId]) galleryEvidenceMap[ev.itemId] = [];
-      galleryEvidenceMap[ev.itemId].push(ev);
-    });
-  }
+  galleryAllEvidence = evRes.success ? evRes.items : [];
   populateStandardFilter();
   populateIndicatorFilter(); // تعبئة كل المؤشرات مباشرة — يقدر يختار المؤشر مباشرة بدون المرور بالمعيار
   renderFilteredGallery();
@@ -616,7 +610,7 @@ function renderFilteredGallery(){
     group.items.forEach(it=>{
       const div = document.createElement('div');
       div.className = 'gallery-item';
-      const evList = galleryEvidenceMap[it.id] || [];
+      const evList = galleryEvidenceForEval(it);
       div.innerHTML = `<b>${it.userName}</b> — ${it.element}
         ${it.score ? ' — الدرجة: '+it.score+'/5' : ''}`;
       list.appendChild(div);
@@ -660,7 +654,7 @@ function exportFormattedFile(){
   let rows = '';
   let i = 0;
   items.forEach(it=>{
-    const evList = galleryEvidenceMap[it.id] || [];
+    const evList = galleryEvidenceForEval(it);
     if(evList.length===0){
       i++;
       rows += `<tr><td>${i}</td><td>${it.userName}</td><td>${it.element}</td><td>${it.committee}</td><td>${it.score||'—'}</td><td>لا يوجد</td></tr>`;
