@@ -253,7 +253,11 @@ async function loadDashboard(){
   });
 }
 
-let evidenceByItem = {};
+let allEvidenceR = [];
+let itemsById = {};
+function evidenceForItem(it){
+  return allEvidenceR.filter(ev => (it.indicatorCode && ev.code === it.indicatorCode) || ev.itemId === it.id);
+}
 
 async function loadItems(){
   const [itemsRes, evRes] = await Promise.all([
@@ -261,13 +265,7 @@ async function loadItems(){
     apiCall({action:'getAllReadinessEvidence'})
   ]);
   if(!itemsRes.success) return;
-  evidenceByItem = {};
-  if(evRes.success){
-    evRes.items.forEach(ev=>{
-      if(!evidenceByItem[ev.itemId]) evidenceByItem[ev.itemId] = [];
-      evidenceByItem[ev.itemId].push(ev);
-    });
-  }
+  allEvidenceR = evRes.success ? evRes.items : [];
   const list = document.getElementById('itemsList');
   list.innerHTML = '';
   const done = itemsRes.items.filter(i=>i.status==='مكتمل').length;
@@ -336,6 +334,7 @@ async function loadItems(){
 
     div.querySelector('.f-file').addEventListener('change', (e)=>uploadEvidenceFile(it.id, div, e.target.files[0]));
 
+    itemsById[it.id] = it;
     renderEvidenceList(it.id);
   });
 }
@@ -344,7 +343,8 @@ function renderEvidenceList(itemId){
   const box = document.getElementById('ev-list-'+itemId);
   if(!box) return;
   box.innerHTML = '';
-  const list = evidenceByItem[itemId] || [];
+  const it = itemsById[itemId];
+  const list = it ? evidenceForItem(it) : [];
   if(list.length===0){
     box.innerHTML = '<div class="save-note">لا توجد شواهد مضافة بعد</div>';
     return;
@@ -382,8 +382,8 @@ async function addLinkEvidence(itemId){
   noteEl.textContent = 'جارِ الإضافة...';
   const res = await apiCall({action:'addReadinessEvidence', itemId, userName: currentUser, evidenceLink: link});
   if(res.success){
-    if(!evidenceByItem[itemId]) evidenceByItem[itemId] = [];
-    evidenceByItem[itemId].push({ id: res.id, itemId, userName: currentUser, evidenceLink: link });
+    const it = itemsById[itemId];
+    allEvidenceR.push({ id: res.id, code: it ? it.indicatorCode : '', itemId, userName: currentUser, evidenceLink: link });
     renderEvidenceList(itemId);
     input.value = '';
     noteEl.textContent = 'تمت الإضافة ✓';
@@ -397,7 +397,7 @@ async function deleteEvidenceItem(evidenceId, itemId){
   const noteEl = document.getElementById('note-'+itemId);
   const res = await apiCall({action:'deleteReadinessEvidence', evidenceId, userName: currentUser});
   if(res.success){
-    evidenceByItem[itemId] = (evidenceByItem[itemId]||[]).filter(e=>e.id!==evidenceId);
+    allEvidenceR = allEvidenceR.filter(e=>e.id!==evidenceId);
     renderEvidenceList(itemId);
     noteEl.textContent = 'تم الحذف';
   } else {
@@ -423,8 +423,8 @@ async function uploadEvidenceFile(id, div, file){
     if(res.success){
       const addRes = await apiCall({action:'addReadinessEvidence', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name});
       if(addRes.success){
-        if(!evidenceByItem[id]) evidenceByItem[id] = [];
-        evidenceByItem[id].push({ id: addRes.id, itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
+        const it = itemsById[id];
+        allEvidenceR.push({ id: addRes.id, code: it ? it.indicatorCode : '', itemId:id, userName: currentUser, evidenceLink: res.url, mimeType: file.type, fileName: file.name });
         renderEvidenceList(id);
         noteEl.textContent = 'تم رفع الملف وإضافته ✓';
       } else {
@@ -473,7 +473,10 @@ function saveItem(id, div){
 let fullFramework = {};
 let galleryItems = [];
 
-let galleryEvidenceByItem = {};
+let allGalleryEvidence = [];
+function galleryEvidenceFor(it){
+  return allGalleryEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+}
 
 async function loadGallery(){
   const [fwRes, evRes, allEvRes] = await Promise.all([
@@ -483,13 +486,7 @@ async function loadGallery(){
   ]);
   if(fwRes.success) fullFramework = fwRes.framework;
   if(evRes.success) galleryItems = evRes.items;
-  galleryEvidenceByItem = {};
-  if(allEvRes.success){
-    allEvRes.items.forEach(ev=>{
-      if(!galleryEvidenceByItem[ev.itemId]) galleryEvidenceByItem[ev.itemId] = [];
-      galleryEvidenceByItem[ev.itemId].push(ev);
-    });
-  }
+  allGalleryEvidence = allEvRes.success ? allEvRes.items : [];
   populateDomainFilter();
   populateStandardFilter();
   populateIndicatorFilter();
@@ -603,7 +600,7 @@ function renderFilteredGallery(){
       row.items.forEach(it=>{
         const div = document.createElement('div');
         div.className = 'gallery-item';
-        const evList = galleryEvidenceByItem[it.id] || [];
+        const evList = galleryEvidenceFor(it);
         if(evList.length===0) div.style.borderRightColor = '#c0392b';
         div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
           ${it.status ? ' — الحالة: '+it.status : ''}`;
@@ -632,7 +629,7 @@ function renderFilteredGallery(){
       group.looseItems.forEach(it=>{
         const div = document.createElement('div');
         div.className = 'gallery-item';
-        const evList = galleryEvidenceByItem[it.id] || [];
+        const evList = galleryEvidenceFor(it);
         if(evList.length===0) div.style.borderRightColor = '#c0392b';
         div.innerHTML = `<b>${it.userName}</b> — ${it.role} — ${it.item}
           ${it.status ? ' — الحالة: '+it.status : ''}`;
@@ -688,7 +685,7 @@ function exportFormattedFile(){
         return;
       }
       row.items.forEach(it=>{
-        const evList = galleryEvidenceByItem[it.id] || [];
+        const evList = galleryEvidenceFor(it);
         if(evList.length===0){
           rowNum++;
           rowsHtml += `<tr><td>${rowNum}</td><td>${group.domain}</td><td>${group.standard}</td>
