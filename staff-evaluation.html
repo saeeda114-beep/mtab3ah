@@ -264,7 +264,8 @@ function addTab(container, label, targetId, active){
 let allEvidenceEval = [];
 let evalItemsById = {};
 function evidenceForEvalItem(it){
-  return allEvidenceEval.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+  return allEvidenceEval.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
 }
 
 async function loadMyEval(){
@@ -456,7 +457,8 @@ async function loadAdminStaffList(){
 }
 let adminAllEvidence = [];
 function adminEvidenceFor(it){
-  return adminAllEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+  return adminAllEvidence.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
 }
 function loadStaffEval(){
   const name = document.getElementById('staffSelect').value;
@@ -541,7 +543,8 @@ let galleryItems = [];
 
 let galleryAllEvidence = [];
 function galleryEvidenceForEval(it){
-  return galleryAllEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+  return galleryAllEvidence.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
 }
 async function loadGallery(){
   const [res, evRes] = await Promise.all([
