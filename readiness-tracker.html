@@ -256,7 +256,8 @@ async function loadDashboard(){
 let allEvidenceR = [];
 let itemsById = {};
 function evidenceForItem(it){
-  return allEvidenceR.filter(ev => (it.indicatorCode && ev.code === it.indicatorCode) || ev.itemId === it.id);
+  return allEvidenceR.filter(ev => ev.userName === it.userName &&
+    ((it.indicatorCode && ev.code === it.indicatorCode) || ev.itemId === it.id));
 }
 
 async function loadItems(){
@@ -475,7 +476,8 @@ let galleryItems = [];
 
 let allGalleryEvidence = [];
 function galleryEvidenceFor(it){
-  return allGalleryEvidence.filter(ev => (it.code && ev.code === it.code) || ev.itemId === it.id);
+  return allGalleryEvidence.filter(ev => ev.userName === it.userName &&
+    ((it.code && ev.code === it.code) || ev.itemId === it.id));
 }
 
 async function loadGallery(){
